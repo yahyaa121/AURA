@@ -100,12 +100,15 @@
         <div class="login-title">CREATE AN ACCOUNT</div>
         <div class="login-subtitle">Fill in the form below to register:</div>
 
-        <form method="post" action="register_process.php">
+        <form method="post" action="process-register.php">
             <div class="form-group">
                 <input type="text" name="name" placeholder="Full name" required>
             </div>
             <div class="form-group">
                 <input type="email" name="email" placeholder="Email address" required>
+            </div>
+            <div class="form-group">
+                <input type="adresse" name="adresse" placeholder="Home address" required>
             </div>
             <div class="form-group">
                 <input type="password" name="password" placeholder="Password" required>
