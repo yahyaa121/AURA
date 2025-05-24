@@ -74,7 +74,7 @@
 </style>
 <div class="reset-container">
   <h2>Reset Your Password</h2>
-  <form action="#" method="post">
+  <form action="send-password-reset.php" method="post">
     <div class="form-group">
       <label for="email">
         Email Address <span class="required">*</span>
