@@ -1,31 +1,30 @@
 <?php
 session_start();
-
-$is_invalid = false;
-
-if (isset($_SESSION["idUser"])) {
-    $is_logged_in = true;
-} else {
-    $is_logged_in = false;
+if (isset($_SESSION['idUser'])) {
+    // User already logged in, redirect to loginout.php
+    header("Location: loginout.php");
+    exit();
 }
-
-if ($_SERVER["REQUEST_METHOD"] === "POST" && !$is_logged_in) {
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $mysqli = require __DIR__ . "/database.php";
+    $email = $_POST["email"] ?? '';
+    $password = $_POST["password"] ?? '';
 
-    $sql = sprintf("SELECT * FROM users WHERE email = '%s'",
-        $mysqli->real_escape_string($_POST["email"]));
-
-    $result = $mysqli->query($sql);
+    // Requête préparée
+    $stmt = $mysqli->prepare("SELECT * FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
     $user = $result->fetch_assoc();
 
-    if ($user && password_verify($_POST["password"], $user["password"])) {
+    if ($user && password_verify($password, $user["password"])) {
         session_regenerate_id();
-        $_SESSION["idUser"] = $user["id"];
-        header("Location: accueil.php"); // or redirect to current page
+        $_SESSION["idUser"] = $user["idUser"];
+        header("Location: loginout.php"); // redirection après connexion\
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['username'] = $user['username'];
         exit;
-    }
-
-    $is_invalid = true;
+    } 
 }
 ?>
 
@@ -222,19 +221,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !$is_logged_in) {
         <?php include('include/header.php'); ?>
     </header>
 
-    <?php if ($is_logged_in): ?>
-    <div class="login-container">
-        <div class="login-title">You are already connected</div>
-        <div class="login-subtitle">Welcome back!</div>
-        <a href="logout.php" class="login-button">Logout</a>
-    </div>
-<?php else: ?>
-    <?php if ($is_invalid): ?>
-        <div class="error" role="alert" aria-live="polite">
-            Invalid email or password.
-        </div>
-    <?php endif; ?>
-
     <form method="post" class="login-container" novalidate>
         <div class="login-title">CONNEXION</div>
         <div class="login-subtitle">Please enter your email and password:</div>
@@ -276,7 +262,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && !$is_logged_in) {
             </div>
         </div>
     </form>
-<?php endif; ?>
 
     <div class="newsletter-container">
         <?php include('include/newsletter.php'); ?>

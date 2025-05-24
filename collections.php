@@ -247,6 +247,8 @@
           <label><input type="checkbox" name="note[]" value="woody"> Woody</label>
           <label><input type="checkbox" name="note[]" value="citrus"> Citrus</label>
           <label><input type="checkbox" name="note[]" value="spicy"> Spicy</label>
+          <label><input type="checkbox" name="note[]" value="Amber"> Amber</label>
+          <label><input type="checkbox" name="note[]" value="Leather"> Leather</label>
         </div>
 
         <div class="filter-group">
