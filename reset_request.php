@@ -74,15 +74,14 @@
 </style>
 <div class="reset-container">
   <h2>Reset Your Password</h2>
-  <form action="#" method="post">
+  <form action="send-password-reset.php" method="post">
     <div class="form-group">
       <label for="email">
         Email Address <span class="required">*</span>
       </label>
-      <span class="required-label">Required</span>
       <input type="email" id="email" name="email" required placeholder="Enter your email address to reset your password">
     </div>
-    <button type="submit" name="rest">Reset Password</button>
+    <button type="submit" name="reset">Reset Password</button>
   </form>
 </div>
 <?php include('include/newsletter.php'); ?>
