@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 24, 2025 at 05:38 PM
+-- Generation Time: May 26, 2025 at 03:09 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -160,12 +160,12 @@ CREATE TABLE IF NOT EXISTS `perfumeimage` (
 --
 
 INSERT INTO `perfumeimage` (`idImage`, `urlImage`, `urlHover`, `idPerfume`) VALUES
-(1, '1.jpg', '1-1.jpg', 1),
-(2, '2.jpg', '2-2.jpg', 2),
-(3, '3.jpg', '3-3.jpg', 3),
-(4, '4.jpg', '4-4.jpg', 4),
-(5, '5.jpg', '5-5.jpg', 5),
-(6, '6.jpg', '6-6.jpg', 6),
+(1, '1.png', '1-1.png', 1),
+(2, '2.png', '2-2.png', 2),
+(3, '3.png', '3-3.png', 3),
+(4, '4.png', '4-4.png', 4),
+(5, '5.png', '5-5.png', 5),
+(6, '6.png', '6-6.png', 6),
 (7, '7.jpg', '7-7.jpg', 7),
 (8, '8.jpg', '8-8.jpg', 8),
 (9, '9.jpg', '9-9.jpg', 9),
@@ -273,8 +273,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`idUser`, `username`, `email`, `adresse`, `password`, `subscriptionDate`, `resetToken`, `tokenDate`) VALUES
-(1, 'Yahya', 'yahyahallal85@gmail.com', 'el waha n50', '$2y$10$utXSFQvOo63AGOX0vlf0wOA6.gZ3fRmNp5hWDcdhzEJh4mf47FQ6C', '2025-05-20 14:16:20', NULL, NULL),
-(2, 'Mouhsine', 'khoukhmouhssine1@gmail.com', 'el waha n51', '$2y$10$iVj.DNmJlwh0hjAfm/5lfeXZMaBA2aOPVqLecmEYQHz0G4ipB.Gii', '2025-05-21 11:35:09', NULL, NULL);
+(1, 'Yahya', 'yahyahallal85@gmail.com', 'el waha n50', '$2y$10$utXSFQvOo63AGOX0vlf0wOA6.gZ3fRmNp5hWDcdhzEJh4mf47FQ6C', '2025-05-20 14:16:20', '1b77688ea66af60349239fa979e7213dfa6b57dc9c2d7412bf404dfafdf6811e', '2025-05-26 10:40:38'),
+(2, 'Mouhsine', 'khoukhmouhssine1@gmail.com', 'el waha n51', '$2y$10$iVj.DNmJlwh0hjAfm/5lfeXZMaBA2aOPVqLecmEYQHz0G4ipB.Gii', '2025-05-21 11:35:09', 'b6d5692c6a4da16ee407e8f38e9e8cea6005ea272334e84b402198245bdf397a', '2025-05-24 19:16:55');
 
 -- --------------------------------------------------------
 
