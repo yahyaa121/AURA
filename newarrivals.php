@@ -115,10 +115,8 @@
   <!-- HEADER -->
   <?php include 'include/header.php'; ?>
 
-  <!-- Trait de séparation -->
   <hr class="full-width" />
 
-  <!-- Contenu principal sans filtres -->
   <div class="main-content">
     <div class="section-title">
       <h2 style="font-size: 24px;">New Arrivals</h2>
@@ -127,7 +125,7 @@
     <div class="products">
       <?php
       // Connexion à la base de données
-      $db = new PDO('mysql:host=127.0.0.1:3306;dbname=aura', 'root', ''); // Remplacez par vos identifiants
+      $db = new PDO('mysql:host=127.0.0.1:3306;dbname=aura', 'root', ''); 
       
       // Requête pour récupérer les 6 derniers parfums ajoutés
       $query = "SELECT p.*, pi.urlImage, pi.urlHover, c.collectionName 
