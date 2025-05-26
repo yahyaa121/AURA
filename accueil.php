@@ -14,11 +14,26 @@
     padding: 0 20px;
   }
 
-  .hero-banner {
+  /* Hero Carousel */
+  .hero-carousel {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    overflow: hidden;
+  }
+
+  .hero-carousel img {
     width: 100%;
     height: 500px;
     object-fit: cover;
-    display: block;
+    position: absolute;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+
+  .hero-carousel img.active {
+    opacity: 1;
+    z-index: 1;
   }
 
   .section {
@@ -49,8 +64,6 @@
   .product-card:hover {
     transform: translateY(-8px);
   }
-
-  
 
   .product-image {
     position: relative;
@@ -175,22 +188,22 @@
   }
 
   .product-icons {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  opacity: 0;
-  transform: translateX(20px); /* ajout: décalage initial */
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 2;
-}
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 2;
+  }
 
-.product-card:hover .product-icons {
-  opacity: 1;
-  transform: translateX(0); /* anim vers la position normale */
-}
+  .product-card:hover .product-icons {
+    opacity: 1;
+    transform: translateX(0);
+  }
 
   .product-icons i {
     background-color: #fff;
@@ -208,27 +221,27 @@
   }
 
   .add-to-cart-btn {
-  position: absolute;
-  bottom: 0px;
-  left: 50%;
-  width:80%;
-  transform: translateX(-50%) translateY(20px); /* ajout: décalage vertical initial */
-  background-image: linear-gradient(to right, #20c997, #17a2b8);
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  border-radius: 4px;
-  opacity: 0;
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-  z-index: 2;
-}
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    width: 80%;
+    transform: translateX(-50%) translateY(20px);
+    background-image: linear-gradient(to right, #20c997, #17a2b8);
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 2;
+  }
 
-.product-card:hover .add-to-cart-btn {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0); /* anim vers le haut */
-}
+  .product-card:hover .add-to-cart-btn {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 
   .add-to-cart-btn:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -238,12 +251,15 @@
 
 <main>
 
-  <!-- Hero Section -->
+  <!-- Hero Section (Carousel) -->
   <section class="hero">
-    <img src="image/byerdo3.jpg" alt="Perfume Banner" class="hero-banner">
+    <div class="hero-carousel">
+      <img src="banners/byerdo3.jpg" class="active" alt="Slide 1">
+      <img src="banners/byerdo.jpg" alt="Slide 2">
+      <img src="banners/imagin.jpg" alt="Slide 3">
+    </div>
   </section>
-
-  <!-- Best Sellers Section -->
+<!-- Best Sellers Section -->
   <section class="section best-sellers">
     <h2>Best sellers</h2>
     <div class="product-grid">
@@ -422,33 +438,42 @@
   </div>
 </div>
 
-<!-- JavaScript to open/close modal -->
-<script>
-  const modal = document.getElementById('quickViewModal');
-  const closeBtn = document.getElementById('closeQuickView');
 
-  function openQuickView() {
-    modal.style.display = 'flex';
-  }
+  <!-- JavaScript pour carrousel -->
+  <script>
+    const slides = document.querySelectorAll('.hero-carousel img');
+    let currentIndex = 0;
 
-  function closeQuickView() {
-    modal.style.display = 'none';
-  }
+    setInterval(() => {
+      slides[currentIndex].classList.remove('active');
+      currentIndex = (currentIndex + 1) % slides.length;
+      slides[currentIndex].classList.add('active');
+    }, 3600); // Change d'image toutes les 4 secondes
+  </script>
 
-  closeBtn.addEventListener('click', closeQuickView);
+  <!-- JavaScript pour Quick View -->
+  <script>
+    const modal = document.getElementById('quickViewModal');
+    const closeBtn = document.getElementById('closeQuickView');
 
-  modal.addEventListener('click', function(e) {
-    if (e.target === modal) {
-      closeQuickView();
+    function openQuickView() {
+      modal.style.display = 'flex';
     }
-  });
-</script>
 
+    function closeQuickView() {
+      modal.style.display = 'none';
+    }
 
+    closeBtn.addEventListener('click', closeQuickView);
 
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) {
+        closeQuickView();
+      }
+    });
+  </script>
 
   <?php include('include/newsletter.php'); ?>
-
 </main>
 
 <?php include('include/footer.php'); ?>
