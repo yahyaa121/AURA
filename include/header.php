@@ -31,7 +31,7 @@
       display: inline-block;
     }
     .logo-img {
-      height: 55px;
+      height: 70px;
       object-fit: contain;
     }
     .main-nav {
