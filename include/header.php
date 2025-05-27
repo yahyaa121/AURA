@@ -12,6 +12,11 @@
       box-sizing: border-box;
       font-family: 'Arial', sans-serif;
     }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     .navbar {
       background-color: white;
       padding: 20px 30px;
@@ -19,48 +24,72 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.3);
       position: static;
+      transition: transform 0.6s ease, opacity 0.6s ease;
+      box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.3);
+      opacity: 1;
+      transform: translateY(0);
+      z-index: 100;
     }
+
+    .navbar.sticky {
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: teal;
+      color: white;
+    }
+
+    .navbar.hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+    }
+
     .logo {
       margin-bottom: 20px;
     }
+
     .logo a {
       text-decoration: none;
       display: inline-block;
     }
+
     .logo-img {
       height: 70px;
       object-fit: contain;
     }
+
     .main-nav {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .nav-left,
-    .nav-center,
-    .nav-right {
+
+    .nav-left, .nav-center, .nav-right {
       display: flex;
       align-items: center;
     }
+
     .nav-left {
       justify-content: flex-start;
       flex: 1;
       gap: 25px;
     }
+
     .nav-center {
       justify-content: center;
       flex: 2;
       gap: 25px;
     }
+
     .nav-right {
       justify-content: flex-end;
       flex: 1;
       gap: 25px;
     }
+
     .main-nav a {
       text-decoration: none;
       color: #333;
@@ -70,41 +99,34 @@
       display: flex;
       align-items: center;
     }
+
     .main-nav a:hover {
       color: #888;
     }
+
     .main-nav i {
       font-size: 18px;
     }
-    .navbar.sticky {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      left: 0;
-      z-index: 100;
-      background-color: teal;
-      color: white;
-      padding: 18px 30px;
-      transform: translateY(0);
-    }
-    .navbar.hidden {
-      transform: translateY(-100%);
-    }
+
     .navbar.sticky .main-nav a {
       color: white;
     }
+
     .navbar.sticky .logo-img {
       filter: brightness(0) invert(1);
     }
+
     .lang-form {
       display: inline-block;
       margin: 0;
       padding: 0;
     }
+
     .lang-select-wrapper {
       position: relative;
       display: inline-block;
     }
+
     .lang-select {
       background: transparent;
       border: none;
@@ -118,13 +140,16 @@
       cursor: pointer;
       padding-right: 20px;
     }
+
     .lang-select option {
       background: white;
       color: #333;
     }
+
     .navbar.sticky .lang-select {
       color: white;
     }
+
     .lang-select-wrapper::after {
       content: '▼';
       position: absolute;
@@ -135,13 +160,16 @@
       pointer-events: none;
       color: #333;
     }
+
     .navbar.sticky .lang-select-wrapper::after {
       color: white;
     }
+
     .collection-wrapper {
       position: relative;
       display: inline-block;
     }
+
     .collection-button {
       background: none;
       border: none;
@@ -152,9 +180,11 @@
       padding-right: 20px;
       position: relative;
     }
+
     .navbar.sticky .collection-button {
       color: white;
     }
+
     .collection-wrapper::after {
       content: '▼';
       position: absolute;
@@ -165,9 +195,11 @@
       pointer-events: none;
       color: #333;
     }
+
     .navbar.sticky .collection-wrapper::after {
       color: white;
     }
+
     .collection-select {
       position: absolute;
       top: 100%;
@@ -180,17 +212,21 @@
       z-index: 200;
       min-width: 160px;
     }
+
     .collection-wrapper:hover .collection-select {
       display: block;
     }
+
     .collection-list {
       list-style: none;
       margin: 0;
       padding: 0;
     }
+
     .collection-list li {
       padding: 8px 12px;
     }
+
     .collection-list li button {
       background: none;
       border: none;
@@ -200,12 +236,15 @@
       cursor: pointer;
       color: #333;
     }
+
     .collection-list li button:hover {
       background-color: #f0f0f0;
     }
+
     .navbar.sticky .collection-select {
       background-color: white;
     }
+
     .navbar.sticky .collection-list li button {
       color: #333;
     }
@@ -215,7 +254,7 @@
   <header class="navbar">
     <div class="logo">
       <a href="accueil.php">
-        <img src="aura.png" alt="AURA Logo" class="logo-img" />
+        <img src="Logo/blackAura.png" alt="AURA Logo" class="logo-img" />
       </a>
     </div>
     <nav class="main-nav">
@@ -237,15 +276,15 @@
           <div class="collection-select">
             <form method="post" action="collections.php">
               <ul class="collection-list">
-                <li><button type="submit" name="designer" value="louis_vuitton">Louis Vuitton</button></li>
-                <li><button type="submit" name="designer" value="jean_paul_gaultier">Jean Paul Gaultier</button></li>
-                <li><button type="submit" name="designer" value="Byerdo">Byerdo</button></li>
+                <li><button type="submit" name="designer" value="Louis Vuitton">Louis Vuitton</button></li>
+                <li><button type="submit" name="designer" value="Jean Paul Gaultier">Jean Paul Gaultier</button></li>
+                <li><button type="submit" name="designer" value="Byredo">Byredo</button></li>
               </ul>
             </form>
           </div>
         </div>
         <a href="#">Offres & Discount</a>
-        <a href="#">New arrivals</a>
+        <a href="newarrivals.php">New arrivals</a>
       </div>
       <div class="nav-right">
         <a href="connexion.php"><i class="fas fa-user"></i></a>
@@ -254,24 +293,25 @@
       </div>
     </nav>
   </header>
+
   <script>
-    // Sticky navbar on scroll
     let lastScroll = 0;
     const navbar = document.querySelector('.navbar');
+    const threshold = 10;
+
     window.addEventListener('scroll', () => {
-      const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-      if (currentScroll < lastScroll && currentScroll > 10) {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll <= threshold) {
+        navbar.classList.remove('sticky', 'hidden');
+      } else if (currentScroll < lastScroll) {
         navbar.classList.add('sticky');
         navbar.classList.remove('hidden');
-      } 
-      else if (currentScroll > lastScroll) {
-        navbar.classList.remove('sticky');
+      } else if (currentScroll > lastScroll) {
         navbar.classList.add('hidden');
       }
-      else if (currentScroll <= 10) {
-        navbar.classList.remove('sticky', 'hidden');
-      }
-      lastScroll = currentScroll <= 0 ? 0 : currentScroll;
+
+      lastScroll = currentScroll;
     });
   </script>
 </body>
