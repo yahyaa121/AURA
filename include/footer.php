@@ -170,7 +170,7 @@
       <div class="footer-main">
         <!-- Colonne gauche -->
         <div class="footer-left">
-          <div class="footer-logo">AURA</div>
+          <div class="footer-logo"><img src="Logo/whiteAura.png" width="150"/></div>
           <div class="contact-info">
             <div>info@AURA.com</div>
             <div>Whatsapp: +99 535 353-17 54</div>
