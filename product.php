@@ -1,269 +1,430 @@
 <?php include('include/header.php'); ?>
 <style>
-  body {
-    background-color: #f8f8f6;
-    color: #1e1e1e;
-    font-family: 'Futura', 'Trebuchet MS', 'Segoe UI', sans-serif;
-}
-
-.product-details {
-    background-color: #fffdf8;
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.07);
+body {
+    background-color: #ffffff;
+    color: #333333;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
 }
 
 .container {
     display: flex;
     flex-wrap: wrap;
-    gap: 80px;
-    padding: 80px 60px;
+    gap: 60px;
+    padding: 40px 20px;
     justify-content: center;
     align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
 }
+
 
 .image-container {
     flex: 1;
-    max-width: 500px;
-    border: none;
-    overflow: hidden;
+    max-width: 450px;
+    min-width: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: #f8f8f8;
+    padding: 20px;
+    border-radius: 8px;
 }
 
 .product-image {
-    border-radius: 0;
     width: 100%;
+    max-width: 350px;
+    height: auto;
+    object-fit: contain;
 }
 
 .product-details {
     flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    background-color: #fdfdfd;
-    border-radius: 12px;
-    padding: 30px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
     max-width: 500px;
+    min-width: 300px;
+    padding: 20px 0;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
 }
 
 .product-details h2 {
-    font-size: 34px;
-    font-weight: 600;
-    margin-bottom: 14px;
-    font-family: 'Futura', sans-serif;
-    color: #1a1a1a;
+    font-size: 36px;
+    font-weight: 300;
+    margin: 0 0 20px 0;
+    font-family: 'Arial', sans-serif;
+    color: #333333;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.2;
+}
+
+.price-range {
+    font-size: 18px;
+    color: #666666;
+    margin-bottom: 15px;
+    font-weight: normal;
+}
+
+.product-collection {
+    font-size: 14px;
+    color: #888888;
+    margin-bottom: 20px;
     text-transform: uppercase;
     letter-spacing: 1px;
-    line-height: 1.2;
-    text-align: left;
-    margin-top: 0;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+}
+
+.product-type {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 10px;
+}
+
+.product-size {
+    font-size: 14px;
+    color: #666666;
+    margin-bottom: 30px;
 }
 
 .product-details p {
     margin: 8px 0;
-    font-size: 15px;
-    color: #444;
+    font-size: 14px;
+    color: #666666;
+    font-weight: normal;
+}
+
+/* Size selection styling */
+.size-selection {
+    margin-bottom: 25px;
+}
+
+.size-selection label {
+    font-size: 12px;
+    color: #666666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.size-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.size-option {
+    padding: 8px 15px;
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    color: #666666;
+    font-size: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+}
+
+.size-option:hover,
+.size-option.selected {
+    border-color: #333333;
+    background: #333333;
+    color: #ffffff;
 }
 
 .quantity-and-cart {
     display: flex;
     align-items: center;
-    gap: 16px;
-    margin-top: 20px;
+    gap: 15px;
+    margin-bottom: 20px;
     flex-wrap: wrap;
 }
 
 .quantity-control {
     display: flex;
     align-items: center;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background: #fff;
-    overflow: hidden;
-    height: 38px;
+    border: 1px solid #dddddd;
+    background: #ffffff;
+    height: 45px;
+    min-width: 120px;
 }
 
 .quantity-btn {
-    width: 32px;
-    height: 38px;
-    font-size: 18px;
-    background: #f5f5f5;
+    width: 35px;
+    height: 45px;
+    font-size: 16px;
+    background: #ffffff;
     border: none;
     cursor: pointer;
+    color: #666666;
     transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.quantity-btn:active {
-    background: #e5e5e5;
+.quantity-btn:hover {
+    background: #f5f5f5;
 }
 
 .quantity-input {
-    width: 40px;
-    height: 38px;
+    width: 50px;
+    height: 45px;
     text-align: center;
-    font-size: 15px;
+    font-size: 14px;
     border: none;
     outline: none;
+    background: #ffffff;
+    color: #333333;
 }
 
 .add-to-cart {
-    background-color: #1a1a1a;
-    text-transform: uppercase;
-    font-family: 'Cormorant Garamond', serif;
-    letter-spacing: 1px;
-    padding: 12px 30px;
-    font-size: 16px;
-    border-radius: 0;
-    color: #fff;
+    background-color: #333333;
+    color: #ffffff;
+    padding: 12px 25px;
+    font-size: 12px;
     border: none;
     cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: normal;
     transition: background-color 0.2s ease;
+    height: 45px;
+    min-width: 150px;
 }
 
 .add-to-cart:hover {
-    background-color: #222;
+    background-color: #555555;
 }
 
 .wishlist {
-    margin-top: 14px;
-    font-size: 13px;
-    color: #777;
+    margin-top: 15px;
+    font-size: 12px;
+    color: #888888;
     cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
+
 .wishlist:hover {
-    color: #b12704;
+    color: #333333;
     text-decoration: underline;
 }
 
 .description {
-    padding: 40px 60px;
+    padding: 60px 20px 40px;
     text-align: center;
     max-width: 800px;
-    margin: auto;
+    margin: 0 auto;
+    border-top: 1px solid #eeeeee;
+    margin-top: 40px;
 }
 
 .description h3 {
-    font-size: 20px;
-    margin-bottom: 14px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #333333;
+    font-weight: normal;
+}
+
+.description p {
+    font-size: 14px;
+    color: #666666;
+    line-height: 1.8;
+    margin-bottom: 15px;
 }
 
 .notes {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 20px;
-    padding: 40px 60px;
+    gap: 40px;
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 .note-box {
     flex: 1;
-    width: 100px;
-    min-width: 180px;
+    min-width: 200px;
+    max-width: 280px;
     background: #ffffff;
-    padding: 24px 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    padding: 20px;
     text-align: center;
-    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+    border: 1px solid #f0f0f0;
+    transition: all 0.3s ease;
 }
 
 .note-box:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-    background-color: #fffdf9;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 .note-box h4 {
-    font-size: 16px;
-    margin-bottom: 8px;
+    font-size: 12px;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #333333;
+    font-weight: normal;
+}
+
+.note-box p {
+    font-size: 13px;
+    color: #666666;
+    line-height: 1.6;
+    font-style: italic;
 }
 
 .similar-products {
-    padding: 50px 30px;
+    padding: 60px 20px;
+    background: #fafafa;
 }
 
 .similar-products h3 {
-    font-size: 20px;
-    margin-bottom: 24px;
+    font-size: 18px;
+    margin-bottom: 40px;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #333333;
+    font-weight: normal;
 }
 
 .similar-products .product-grid {
-    display: flex; /* FLEX au lieu de GRID */
+    display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 30px;
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 0 auto;
 }
 
 .similar-products .product-card {
-    background: #fff;
-    border-radius: 12px;
+    background: #ffffff;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
     text-align: center;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    width: 200px;
+    width: 250px;
+    border: 1px solid #f0f0f0;
 }
 
 .similar-products .product-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 .similar-products .product-image-frame {
-    background: #fff;
+    background: #f8f8f8;
     overflow: hidden;
-    border-radius: 12px 12px 0 0;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
 .similar-products .product-image {
     width: 100%;
-    height: 220px;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    position: relative;
 }
 
 .similar-products .product-image img {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 80%;
+    max-height: 80%;
     object-fit: contain;
     transition: opacity 0.4s ease;
-    position: relative;
 }
 
 .similar-products .img-hover {
     opacity: 0;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .similar-products .product-card:hover .img-hover {
     opacity: 1;
 }
 
+.similar-products .product-card:hover .img-default {
+    opacity: 0;
+}
+
+.similar-products .product-card .product-info {
+    padding: 20px 15px;
+}
+
 .similar-products .product-card p {
     margin: 8px 0;
+    font-size: 13px;
+    color: #666666;
+}
+
+.similar-products .product-card p:first-child {
     font-size: 14px;
-    color: #333;
+    color: #333333;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: normal;
 }
 
 .similar-products .product-card p:nth-of-type(2) {
-    font-weight: bold;
-    font-size: 15px;
+    font-size: 12px;
+    color: #888888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .similar-products .product-card p:last-of-type {
-    color: #b12704;
-    font-weight: bold;
-    font-size: 16px;
+    color: #333333;
+    font-weight: normal;
+    font-size: 14px;
+    margin-top: 10px;
 }
+
 .similar-products .product-card p:last-of-type::before {
     content: "€";
-    margin-right: 4px;
+    margin-right: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        gap: 30px;
+        padding: 20px 15px;
+    }
+    
+    .image-container,
+    .product-details {
+        max-width: 100%;
+    }
+    
+    .product-details h2 {
+        font-size: 28px;
+    }
+    
+    .notes {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .similar-products .product-grid {
+        justify-content: center;
+    }
+    
+    .similar-products .product-card {
+        width: 200px;
+    }
 }
 </style>
 
@@ -300,10 +461,18 @@ if (isset($_GET['id'])) {
 
     <div class="product-details">
         <h2><?= $product['perfumeName'] ?></h2>
-        <p><strong>Price :</strong> <?= $product['price'] ?>€</p>
-        <p><strong>Elements of Perfume :</strong> <?= $product['fragranceFamily'] ?></p>
-        <p><strong>Type of Perfume :</strong> Eau de Parfum</p>
-        <p>50 ml @ 1.7 FL.OZ. SPRAY</p>
+        <div class="price-range"><?= $product['price'] ?>$</div>
+        <div class="product-collection"><?= $product['fragranceFamily'] ?></div>
+        <div class="product-type">Extrait de Parfum</div>
+        <div class="product-size">50 ml e 1.7 FL.OZ. VAPORISATEUR<br></div>
+
+        <!-- Size Selection -->
+        <div class="size-selection">
+            <label>CONTENANCE:</label>
+            <div class="size-options">
+                <div class="size-option selected" data-size="50ml">50ml</div>
+            </div>
+        </div>
 
         <div class="quantity-and-cart">
             <div class="quantity-control">
@@ -311,10 +480,10 @@ if (isset($_GET['id'])) {
                 <input type="number" class="quantity-input" id="qty-input" value="1" min="1" max="4">
                 <button type="button" class="quantity-btn" id="qty-plus">+</button>
             </div>
-            <button class="add-to-cart">Add to Cart</button>
+            <button class="add-to-cart">ADD TO CART</button>
         </div>
 
-        <div class="wishlist">♡ Add to wishlist</div>
+        <div class="wishlist">♡ ADD TO WISHLIST</div>
     </div>
 </div>
 
@@ -329,15 +498,15 @@ if (isset($_GET['id'])) {
 <!-- ---------- NOTES ---------- -->
 <div class="notes">
     <div class="note-box">
-        <h4>TOP NOTES</h4>
+        <h4>NOTES DE TÊTE</h4>
         <p><?= $product['topNotes'] ?></p>
     </div>
     <div class="note-box">
-        <h4>HEART NOTES</h4>
+        <h4>NOTES DE COEUR</h4>
         <p><?= $product['middleNotes'] ?></p>
     </div>
     <div class="note-box">
-        <h4>BASE NOTES</h4>
+        <h4>NOTES DE FOND</h4>
         <p><?= $product['baseNotes'] ?></p>
     </div>
 </div>
@@ -357,9 +526,11 @@ $stmtSimilar->execute();
 $resultSimilar = $stmtSimilar->get_result();
 ?>
 <div class="similar-products">
+    <hr style="margin: 10; border: 1px solid #e0e0e0; width: 100%; margin-top: 50px;">
     <h3>Similar products</h3>
     <div class="product-grid">
         <?php while ($similarProduct = $resultSimilar->fetch_assoc()) : ?>
+            <a href="product.php?id=<?= $similarProduct['idPerfume'] ?>" class="product-card-link">
         <div class="product-card">
             <div class="product-image-frame">
                 <div class="product-image">
@@ -367,10 +538,13 @@ $resultSimilar = $stmtSimilar->get_result();
                     <img src="perfume/<?= $similarProduct['urlHover'] ?>" alt="Product Hover" class="img-hover">
                 </div>
             </div>
-            <p><?= $similarProduct['perfumeName'] ?></p>
-            <p><?= $similarProduct['collectionName'] ?></p>
-            <p><?= $similarProduct['price'] ?></p>
+            <div class="product-info">
+                <p><?= $similarProduct['perfumeName'] ?></p>
+                <p><?= $similarProduct['collectionName'] ?></p>
+                <p><?= $similarProduct['price'] ?></p>
+            </div>
         </div>
+            </a>
         <?php endwhile; ?>
     </div>
 </div>
@@ -414,6 +588,23 @@ $resultSimilar = $stmtSimilar->get_result();
         if (isNaN(value) || value < 1) {
             qtyInput.value = 1;
         }
+    });
+</script>
+
+<!-- ---------- SIZE SELECTION SCRIPT ---------- -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Size selection functionality
+        const sizeOptions = document.querySelectorAll('.size-option');
+        
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected class from all options
+                sizeOptions.forEach(opt => opt.classList.remove('selected'));
+                // Add selected class to clicked option
+                this.classList.add('selected');
+            });
+        });
     });
 </script>
 
