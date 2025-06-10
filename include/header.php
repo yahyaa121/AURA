@@ -20,29 +20,22 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      transition: transform 0.6s ease, opacity 0.6s ease;
+      transition: all 0.3s ease;
       box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.3);
-      position: relative;
-      transform: translateY(0);
-      opacity: 1;
-      z-index: 9999;
-    }
-
-    .navbar.hidden {
-      transform: translateY(-100%);
-      opacity: 0;
-      pointer-events: none;
+      position: static;
     }
 
     .logo {
       margin-bottom: 20px;
     }
+
     .logo a {
       text-decoration: none;
       display: inline-block;
     }
+
     .logo-img {
-      height: 70px;
+      height: 55px;
       object-fit: contain;
     }
 
@@ -65,11 +58,13 @@
       flex: 1;
       gap: 25px;
     }
+
     .nav-center {
       justify-content: center;
       flex: 2;
       gap: 25px;
     }
+
     .nav-right {
       justify-content: flex-end;
       flex: 1;
@@ -106,6 +101,10 @@
       transform: translateY(0);
     }
 
+    .navbar.hidden {
+      transform: translateY(-100%);
+    }
+
     .navbar.sticky .main-nav a {
       color: white;
     }
@@ -129,6 +128,8 @@
       background: transparent;
       border: none;
       outline: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
       appearance: none;
       color: inherit;
       font-size: 16px;
@@ -161,7 +162,6 @@
       color: white;
     }
 
-    /* COLLECTION DROPDOWN AMÉLIORÉ */
     .collection-wrapper {
       position: relative;
       display: inline-block;
@@ -176,56 +176,52 @@
       cursor: pointer;
       padding-right: 20px;
       position: relative;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: color 0.3s ease;
+    }
+
+    .navbar.sticky .collection-button {
+      color: white;
     }
 
     .collection-wrapper::after {
       content: '▼';
-      font-size: 12px;
       position: absolute;
       right: 0;
       top: 50%;
       transform: translateY(-50%);
-      transition: transform 0.3s ease;
-      color: #333;
+      font-size: 12px;
       pointer-events: none;
+      color: #333;
     }
 
-    .collection-wrapper:hover::after {
-      transform: translateY(-50%) rotate(180deg);
+    .navbar.sticky .collection-wrapper::after {
+      color: white;
     }
 
     .collection-select {
       position: absolute;
-      top: 110%;
+      top: 100%;
       left: 0;
       background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-      border: 1px solid #ddd;
-      padding: 10px 0;
-      display: block;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-      z-index: 999;
-      min-width: 180px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      padding: 5px;
+      display: none;
+      z-index: 200;
+      min-width: 160px;
     }
 
     .collection-wrapper:hover .collection-select {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
+      display: block;
     }
 
     .collection-list {
       list-style: none;
       margin: 0;
       padding: 0;
+    }
+
+    .collection-list li {
+      padding: 8px 12px;
     }
 
     .collection-list li button {
@@ -236,20 +232,10 @@
       font-size: 15px;
       cursor: pointer;
       color: #333;
-      padding: 10px 15px;
-      transition: background-color 0.3s ease;
     }
 
     .collection-list li button:hover {
-      background-color: #f7f7f7;
-    }
-
-    .navbar.sticky .collection-button {
-      color: white;
-    }
-
-    .navbar.sticky .collection-wrapper::after {
-      color: white;
+      background-color: #f0f0f0;
     }
 
     .navbar.sticky .collection-select {
@@ -259,68 +245,185 @@
     .navbar.sticky .collection-list li button {
       color: #333;
     }
+    #searchIcon {
+  color: black;
+  text-decoration: none;
+  padding: 5px;
+  display: inline-block;
+  transition: color 0.3s;
+}
+
+.navbar.sticky #searchIcon {
+  color: white;
+}
+
+/* Keep suggestions text always black on white background */
+#suggestions {
+  color: black !important;
+  background: white !important;
+  border-color: #ccc !important;
+}
+
+
   </style>
 </head>
 <body>
+
   <header class="navbar">
     <div class="logo">
       <a href="accueil.php">
-        <img src="Logo/blackAura.png" alt="AURA Logo" class="logo-img" />
+        <img src="aura.png" alt="AURA Logo" class="logo-img" />
       </a>
     </div>
+
     <nav class="main-nav">
       <div class="nav-left">
         <form method="post" action="change_language.php" class="lang-form">
           <div class="lang-select-wrapper">
             <select name="lang" class="lang-select" onchange="this.form.submit()">
-              <option value="fr" selected>FR</option>
-              <option value="en">EN</option>
+             <option value="fr" <?= ($_SESSION['lang'] ?? 'fr') == 'fr' ? 'selected' : '' ?>>FR</option>
+      <option value="en" <?= ($_SESSION['lang'] ?? 'fr') == 'en' ? 'selected' : '' ?>>EN</option>
             </select>
           </div>
         </form>
-        <a href="#"><i class="fas fa-search"></i></a>
+        <!-- Include Font Awesome CDN if not already included -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+<div style="position: relative; width: 250px; font-size: 18px;">
+
+  <!-- Search icon link -->
+  <a href="#" id="searchIcon" style="text-decoration: none; padding: 5px; display: inline-block;">
+  <i class="fas fa-search"></i>
+</a>
+
+
+  <!-- Search input, hidden initially -->
+  <input 
+    type="text" 
+    id="searchInput" 
+    placeholder="Rechercher un parfum..." 
+    autocomplete="off" 
+    style="padding: 5px; width: 100%; display: none; border: 1px solid #ccc; font-size: 16px;"
+  />
+
+  <div id="suggestions" 
+       style="position: absolute; background: white; border: 1px solid #ccc; width: 100%; max-height: 150px; overflow-y: auto; display: none; z-index: 1000;">
+  </div>
+</div>
+
+<script>
+  const items = ['Nouveau Monde','Imagination','Ombre Nomade', 'Bal d\'Afrique', 'Black Saffron', 'Mojave Ghost', 'Super Cedar', 'Rouge Chaotique', 'Sellier','Ultra Male', 'Scndal Pour Homme','Gaultier Divine','Scandal Le Parfum','Le Male Elixir' ];
+
+  const searchIcon = document.getElementById('searchIcon');
+  const searchInput = document.getElementById('searchInput');
+  const suggestions = document.getElementById('suggestions');
+
+  searchIcon.addEventListener('click', (e) => {
+    e.preventDefault(); // prevent default link action
+    searchInput.style.display = 'block';
+    searchInput.focus();
+    searchIcon.style.display = 'none';
+  });
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase().trim();
+
+    if (query.length < 1) {
+      suggestions.style.display = 'none';
+      suggestions.innerHTML = '';
+      return;
+    }
+
+    const filtered = items.filter(item => item.toLowerCase().includes(query));
+
+    if(filtered.length === 0) {
+      suggestions.style.display = 'none';
+      suggestions.innerHTML = '';
+      return;
+    }
+
+    suggestions.innerHTML = '';
+    filtered.forEach(item => {
+      const div = document.createElement('div');
+      div.textContent = item;
+      div.style.padding = '5px';
+      div.style.cursor = 'pointer';
+
+      div.addEventListener('click', () => {
+        const urlName = encodeURIComponent(item);
+        window.location.href = `product.php?name=${urlName}`;
+      });
+
+      suggestions.appendChild(div);
+    });
+
+    suggestions.style.display = 'block';
+  });
+
+  document.addEventListener('click', e => {
+    if (!searchInput.contains(e.target) && !suggestions.contains(e.target) && !searchIcon.contains(e.target)) {
+      suggestions.style.display = 'none';
+      if(searchInput.value.trim() === '') {
+        searchInput.style.display = 'none';
+        searchIcon.style.display = 'inline-block';
+      }
+    }
+  });
+</script>
+
       </div>
+
       <div class="nav-center">
-        <a href="perfume.php">Perfumes</a>
-        <div class="collection-wrapper">
-          <button type="button" class="collection-button">Collections</button>
-          <div class="collection-select">
+    <a href="perfume.php"><?= $lang['perfumes'] ?></a>
+
+    <div class="collection-wrapper">
+        <button type="button" class="collection-button"><?= $lang['collections'] ?></button>
+        <div class="collection-select">
             <form method="post" action="collections.php">
-              <ul class="collection-list">
-                <li><button type="submit" name="designer" value="Louis Vuitton">Louis Vuitton</button></li>
-                <li><button type="submit" name="designer" value="Jean Paul Gaultier">Jean Paul Gaultier</button></li>
-                <li><button type="submit" name="designer" value="Byredo">Byredo</button></li>
-              </ul>
+                <ul class="collection-list">
+                    <li><button type="submit" name="designer" value="louis_vuitton">Louis Vuitton</button></li>
+                    <li><button type="submit" name="designer" value="jean_paul_gaultier">Jean Paul Gaultier</button></li>
+                    <li><button type="submit" name="designer" value="Byerdo">Byerdo</button></li>
+                </ul>
             </form>
-          </div>
         </div>
-        <a href="#">Offres & Discount</a>
-        <a href="newarrivals.php">New arrivals</a>
-      </div>
+    </div>
+
+    <a href="offres.php"><?= $lang['offers'] ?></a>
+    <a href="newarrivals.php"><?= $lang['new_arrivals'] ?></a>
+</div>
+
       <div class="nav-right">
         <a href="connexion.php"><i class="fas fa-user"></i></a>
-        <a href="#"><i class="fas fa-heart"></i></a>
+        <a href="wishlist.php"><i class="fas fa-heart"></i></a>
         <a href="#"><i class="fas fa-shopping-cart"></i></a>
       </div>
     </nav>
   </header>
 
   <script>
+    // Sticky navbar on scroll
     let lastScroll = 0;
     const navbar = document.querySelector('.navbar');
+
     window.addEventListener('scroll', () => {
       const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
       if (currentScroll < lastScroll && currentScroll > 10) {
         navbar.classList.add('sticky');
         navbar.classList.remove('hidden');
-      } else if (currentScroll > lastScroll) {
+      } 
+      else if (currentScroll > lastScroll) {
         navbar.classList.remove('sticky');
         navbar.classList.add('hidden');
-      } else if (currentScroll <= 10) {
+      }
+      else if (currentScroll <= 10) {
         navbar.classList.remove('sticky', 'hidden');
       }
+
       lastScroll = currentScroll <= 0 ? 0 : currentScroll;
     });
   </script>
+
 </body>
 </html>
