@@ -1,15 +1,21 @@
+<?php 
+include "include/init.php";
+include('include/header.php'); 
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Perfume Shop</title>
+  <title><?= $lang["footer_collections"] ?></title>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: serif;
+      font-family: Arial, sans-serif;
     }
 
     body {
@@ -37,6 +43,10 @@
     }
 
     .category-bar a:hover {
+      border-bottom: 2px solid #000;
+    }
+
+    .category-bar a.active {
       border-bottom: 2px solid #000;
     }
 
@@ -129,38 +139,42 @@
       flex: 1;
     }
 
+    /* Updated Product Grid to match Best Sellers */
     .products {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 30px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .product {
       position: relative;
       text-align: center;
-      overflow: hidden;
       transition: transform 0.3s ease;
     }
 
     .product:hover {
-      transform: scale(1.02);
+      transform: translateY(-8px);
     }
 
     .product-image-container {
-      position: relative;
-      width: 100%;
-      height: 250px;
+     position: relative;
+    width: 100%;
+    height: 250px;
+    padding-right:200px;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     }
 
     .product img {
-      width: 100%;
-      height: 100%;
+      max-width: 100%;
+      max-height: 100%;
       object-fit: contain;
-      background-color: #fff;
-      transition: opacity 0.4s ease;
       position: absolute;
-      top: 0;
-      left: 0;
+      transition: opacity 0.4s ease;
     }
 
     .product img.hover-img {
@@ -176,27 +190,87 @@
     }
 
     .product-name {
-      margin-top: 10px;
-      font-size: 14px;
+      margin: 8px 0;
+      font-size: 16px;
+      color: #333;
     }
 
     .product-brand {
       font-style: italic;
-      font-size: 13px;
+      font-size: 14px;
+      margin-bottom: 5px;
     }
 
     .product-price {
       font-weight: bold;
-      margin-top: 5px;
+      font-size: 18px;
+      color: #000;
     }
 
-    .header, .footer {
-      text-align: center;
-      padding: 20px;
+    /* New elements to match Best Sellers */
+     .product-icons {
+  position: absolute;
+  top: 10px;
+  right: 0px; /* <-- augmente la valeur ici (ex: 30px) */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 2;
+}
+
+    .product:hover .product-icons {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .product-icons i {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #000;
+      padding: 8px;
+      border-radius: 50%;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .product-icons i:hover {
+      transform: scale(1.1);
+    }
+
+     .add-to-cart-btn {
+  position: absolute;
+  bottom: 0px;
+  left: 55%;      /* <-- passe de 50% à 60% pour décaler à droite */
+  width: 80%;
+  transform: translateX(-50%) translateY(20px);
+  background-color: #0a2e38;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  z-index: 2;
+}
+
+    .product:hover .add-to-cart-btn {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .add-to-cart-btn:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      background-color: #15414e;
     }
 
     .filter-btn {
-      background-color:rgb(45, 175, 186);
+      background-color: rgb(45, 175, 186);
       color: #fff;
       border: none;
       padding: 10px 20px;
@@ -208,19 +282,56 @@
     }
 
     .filter-btn:hover {
-      background-color:rgb(33, 110, 136);
+      background-color: rgb(33, 110, 136);
+    }
+    
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 50px;
+      font-size: 18px;
+      color: #666;
+    }
+
+    /* Quick View Modal */
+    #quickViewModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      padding: 20px;
+      box-sizing: border-box;
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <?php include 'include/header.php'; ?>
-
-  <!-- Barre des catégories -->
+  <!-- Barre des collections -->
   <div class="category-bar">
-   <?php if(isset($_POST['designer'])) { ?>
-    <a href="#"><?= $_POST['designer']  ?></a> <?php } ?>
+    <?php 
+    $collectionMap = [
+      'louis_vuitton' => 'LOUIS VUITTON',
+      'jean_paul_gaultier' => 'JEAN PAUL GAULTIER',
+      'Byerdo' => 'BYREDO'
+    ];
+    $activeCollection = 'louis_vuitton';
+    if(isset($_GET['collection'])) {
+        $activeCollection = $_GET['collection'];
+    } 
+    elseif(isset($_POST['designer'])) {
+        $activeCollection = $_POST['designer'];
+    }
+    foreach($collectionMap as $key => $value) {
+      $activeClass = ($activeCollection == $key) ? 'active' : '';
+      echo '<a href="?collection='.$key.'" class="'.$activeClass.'">'.$value.'</a>';
+    }
+    ?>
   </div>
 
   <!-- Trait de séparation pleine largeur -->
@@ -230,60 +341,337 @@
   <div class="container">
     <!-- Filtres -->
     <div class="filters">
-      <h2>Filter</h2>
+      <h2><?= $lang['filter_title'] ?></h2>
+      <form method="GET" action="">
+        <input type="hidden" name="collection" value="<?= htmlspecialchars($activeCollection) ?>">
 
-      <form method="GET" action="filtered_results.php">
         <div class="filter-group">
-          <h3>Price</h3>
+          <h3><?= $lang['filter_price'] ?></h3>
           <select name="price_order">
-            <option value="asc">Ascending</option>
-            <option value="desc">Descending</option>
+            <option value=""><?= $lang['filter_price_select'] ?></option>
+            <option value="asc" <?= (isset($_GET['price_order']) && $_GET['price_order'] == 'asc') ? 'selected' : '' ?>><?= $lang['filter_price_asc'] ?></option>
+            <option value="desc" <?= (isset($_GET['price_order']) && $_GET['price_order'] == 'desc') ? 'selected' : '' ?>><?= $lang['filter_price_desc'] ?></option>
           </select>
         </div>
 
         <div class="filter-group">
-          <h3>Olfactory notes</h3>
-          <label><input type="checkbox" name="note[]" value="floral"> Floral</label>
-          <label><input type="checkbox" name="note[]" value="woody"> Woody</label>
-          <label><input type="checkbox" name="note[]" value="citrus"> Citrus</label>
-          <label><input type="checkbox" name="note[]" value="spicy"> Spicy</label>
-          <label><input type="checkbox" name="note[]" value="Amber"> Amber</label>
-          <label><input type="checkbox" name="note[]" value="Leather"> Leather</label>
+          <h3><?= $lang['filter_olfactory'] ?></h3>
+          <?php
+          $noteOptions = [
+            'floral' => $lang['filter_note_floral'],
+            'woody' => $lang['filter_note_woody'],
+            'citrus' => $lang['filter_note_citrus'],
+            'spicy' => $lang['filter_note_spicy'],
+            'amber' => $lang['filter_note_amber'],
+            'leather' => $lang['filter_note_leather']
+          ];
+          foreach($noteOptions as $value => $label) {
+            $checked = (isset($_GET['note']) && in_array($value, $_GET['note'])) ? 'checked' : '';
+            echo '<label><input type="checkbox" name="note[]" value="'.$value.'" '.$checked.'> '.$label.'</label>';
+          }
+          ?>
         </div>
 
         <div class="filter-group">
-          <h3>Season</h3>
-          <label><input type="checkbox" name="season[]" value="all"> All</label>
-          <label><input type="checkbox" name="season[]" value="spring"> Spring</label>
-          <label><input type="checkbox" name="season[]" value="summer"> Summer</label>
-          <label><input type="checkbox" name="season[]" value="autumn"> Autumn</label>
-          <label><input type="checkbox" name="season[]" value="winter"> Winter</label>
+          <h3><?= $lang['filter_season'] ?></h3>
+          <?php
+          $seasonOptions = [
+            'spring' => $lang['filter_season_spring'],
+            'summer' => $lang['filter_season_summer'],
+            'autumn' => $lang['filter_season_autumn'],
+            'winter' => $lang['filter_season_winter']
+          ];
+          foreach($seasonOptions as $value => $label) {
+            $checked = (isset($_GET['season']) && in_array($value, $_GET['season'])) ? 'checked' : '';
+            echo '<label><input type="checkbox" name="season[]" value="'.$value.'" '.$checked.'> '.$label.'</label>';
+          }
+          ?>
         </div>
 
-        <button type="submit" class="filter-btn">Apply Filters</button>
+        <button type="submit" class="filter-btn"><?= $lang['filter_apply'] ?></button>
       </form>
     </div>
 
     <!-- Produits -->
     <div class="main-content">
       <div class="products">
-        <?php for($i = 0; $i < 6; $i++): ?>
-        <div class="product">
-          <div class="product-image-container">
-            <img src="6.jpg" alt="Product Image" class="main-img" />
-            <img src="hover6.jpg" alt="Hover Image" class="hover-img" />
-          </div>
-          <div class="product-name">Name of perfume</div>
-          <div class="product-brand">Brand Name</div>
-          <div class="product-price">$99.99</div>
-        </div>
-        <?php endfor; ?>
+        <?php
+        // Connexion à la base de données
+        $host = '127.0.0.1:3306';
+        $dbname = 'aura';
+        $username = 'root';
+        $password = '';
+
+        try {
+            $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            // Base query
+            $query = "
+                SELECT p.*, pi.urlImage, pi.urlHover, c.collectionName 
+                FROM perfumes p
+                JOIN collections c ON p.idCollection = c.idCollection
+                JOIN perfumeimage pi ON p.idPerfume = pi.idPerfume
+                JOIN olfactivenotes o ON p.idPerfume = o.idPerfume
+                WHERE c.collectionName = :collectionName
+            ";
+            
+            $params = [];
+            
+            // Collection filter
+            $collectionName = $collectionMap[$activeCollection] ?? $collectionMap['louis_vuitton'];
+            $params[':collectionName'] = $collectionName;
+            
+            // Olfactory notes filter
+            if(isset($_GET['note']) && is_array($_GET['note'])) {
+                $noteConditions = [];
+                foreach($_GET['note'] as $note) {
+                    switch($note) {
+                        case 'floral':
+                            $noteConditions[] = "(o.topNotes LIKE '%Rose%' OR o.middleNotes LIKE '%Rose%' OR o.baseNotes LIKE '%Rose%' 
+                                              OR o.topNotes LIKE '%Jasmine%' OR o.middleNotes LIKE '%Jasmine%' OR o.baseNotes LIKE '%Jasmine%')";
+                            break;
+                        case 'woody':
+                            $noteConditions[] = "(o.baseNotes LIKE '%Wood%' OR o.baseNotes LIKE '%Cedar%' OR o.baseNotes LIKE '%Sandalwood%')";
+                            break;
+                        case 'citrus':
+                            $noteConditions[] = "(o.topNotes LIKE '%Bergamot%' OR o.topNotes LIKE '%Citrus%' OR o.topNotes LIKE '%Orange%')";
+                            break;
+                        case 'spicy':
+                            $noteConditions[] = "(o.topNotes LIKE '%Saffron%' OR o.middleNotes LIKE '%Cinnamon%' OR o.topNotes LIKE '%Pepper%')";
+                            break;
+                        case 'amber':
+                            $noteConditions[] = "(o.baseNotes LIKE '%Amber%')";
+                            break;
+                        case 'leather':
+                            $noteConditions[] = "(o.middleNotes LIKE '%Leather%')";
+                            break;
+                    }
+                }
+                if(!empty($noteConditions)) {
+                    $query .= " AND (" . implode(" OR ", $noteConditions) . ")";
+                }
+            }
+            
+            // Season filter
+            if(isset($_GET['season']) && is_array($_GET['season'])) {
+                $seasonConditions = [];
+                foreach($_GET['season'] as $season) {
+                    switch($season) {
+                        case 'spring':
+                            $seasonConditions[] = "p.season LIKE '%Spring%'";
+                            break;
+                        case 'summer':
+                            $seasonConditions[] = "p.season LIKE '%Summer%'";
+                            break;
+                        case 'autumn':
+                            $seasonConditions[] = "p.season LIKE '%Autumn%'";
+                            break;
+                        case 'winter':
+                            $seasonConditions[] = "p.season LIKE '%Winter%'";
+                            break;
+                    }
+                }
+                if(!empty($seasonConditions)) {
+                    $query .= " AND (" . implode(" OR ", $seasonConditions) . ")";
+                }
+            }
+            
+            // Price order
+            $orderBy = "";
+            if(isset($_GET['price_order'])) {
+                if($_GET['price_order'] == 'asc') {
+                    $orderBy = " ORDER BY p.price ASC";
+                } elseif($_GET['price_order'] == 'desc') {
+                    $orderBy = " ORDER BY p.price DESC";
+                }
+            } else {
+                $orderBy = " ORDER BY p.perfumeName ASC";
+            }
+            
+            $query .= $orderBy;
+            
+            // Prepare and execute query
+            $stmt = $pdo->prepare($query);
+            
+            // Bind parameters
+            foreach($params as $key => $value) {
+                $stmt->bindValue($key, $value);
+            }
+            
+            $stmt->execute();
+            $perfumes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if(count($perfumes) > 0) {
+                foreach($perfumes as $perfume) {
+                    echo '
+                    <div class="product">
+                        <div class="product-image-container">
+                          <?php
+                         <a href="product.php?action=add&id='.$perfume['idPerfume'].'">
+                            <img src="perfumes/'.$perfume['urlImage'].'" alt="'.$perfume['perfumeName'].'" class="main-img" />
+                            <img src="perfumes/'.$perfume['urlHover'].'" alt="'.$perfume['perfumeName'].'" class="hover-img" />
+                            </a>
+                            <div class="product-icons">
+                                <i class="fas fa-eye" onclick="openQuickView('.$perfume['idPerfume'].')" title="'.$lang['product_quick_view'].'"></i>';
+                                $isInWishlist = in_array($perfume['idPerfume'], $_SESSION['wishlist'] ?? []);
+                                echo '<a href="#" class="add-to-wishlist" data-id="'.$perfume['idPerfume'].'" title="Ajouter à la wishlist">
+                                    <i class="'.($isInWishlist ? 'fas' : 'far').' fa-heart wishlist-heart" style="'.($isInWishlist ? 'color:#c0392b;' : '').'"></i>
+                                </a>
+                            </div>
+                            <button class="add-to-cart-btn" onclick="addToCart('.$perfume['idPerfume'].')">
+                                '.$lang['product_add_to_cart'].'
+                            </button>
+                        </div>
+                        <p class="product-brand">'.$perfume['collectionName'].'</p>
+                        <p class="product-name">'.$perfume['perfumeName'].'</p>
+                        <p class="product-price">$'.number_format($perfume['price'], 2).'</p>
+                    </div>
+                    ';
+                }
+            } else {
+                echo '<div class="no-results">'.$lang['no_results'].'</div>';
+            }
+            
+        } catch(PDOException $e) {
+            echo '<div class="no-results">Database error: ' . $e->getMessage() . '</div>';
+        }
+        ?>
       </div>
     </div>
   </div>
 
+  <!-- Quick View Modal -->
+  <div id="quickViewModal"></div>
+
   <!-- FOOTER -->
   <?php include 'include/footer.php'; ?>
 
+  <script>
+    // Quick View Functionality
+    function openQuickView(productId) {
+        const modal = document.getElementById('quickViewModal');
+        
+        // Afficher un indicateur de chargement
+        modal.innerHTML = '<div style="color:white; font-size:20px;">Loading...</div>';
+        modal.style.display = 'flex';
+        
+        fetch('get_product_details.php?id=' + productId)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network error');
+                }
+                return response.json();
+            })
+            .then(product => {
+                // Formatage du prix pour la plage
+                const basePrice = parseFloat(product.price);
+                const priceRange = `${basePrice}€ – ${basePrice + 100}€`;
+                
+                // Remplir le modal avec le template
+                modal.innerHTML = `
+                    <div style="background:#fff; padding:20px; border-radius:12px; max-width:800px; width:100%;
+                         box-shadow:0 10px 25px rgba(0,0,0,0.2); position:relative; overflow-y:auto; max-height:90vh; display:flex; flex-wrap:wrap; gap:20px;">
+                        
+                        <button id="closeQuickView"
+                          style="position:absolute; top:15px; right:15px; font-size:22px; font-weight:bold;
+                          border:none; background:none; cursor:pointer; color:#666;">&times;</button>
+
+                        <div style="flex:1 1 250px; text-align:center;">
+                            <img src="perfumes/${product.urlImage}" alt="${product.perfumeName}" style="max-width:100%; border-radius:8px;">
+                        </div>
+
+                        <div class="product-container" style="flex:1 1 400px; font-family:\'Helvetica Neue\',Arial,sans-serif; color:#333;">
+                            <h1 class="product-title" style="font-size:24px; font-weight:300; letter-spacing:1px; margin-bottom:5px;">${product.perfumeName}</h1>
+                            <div class="collection" style="font-size:14px; color:#777; margin-bottom:20px;">Collection ${product.collectionName}</div>
+                            <div class="price-range" style="font-size:16px; margin-bottom:15px;">${priceRange}</div>
+                            <div class="fragrance-notes" style="font-size:14px; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px; color:#555;">
+                                ${product.fragranceFamily}
+                            </div>
+                            <div class="product-type" style="font-size:14px; margin-bottom:20px; font-weight:300;">Extrait de Parfum</div>
+
+                            <div class="size-options" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; font-size:14px;">
+                               
+                                <div class="size-option"><span class="size-label" style="color:#777;"> ${product.season}</span></div>
+                               
+                            </div>
+
+                            <div class="size-selector" style="margin-bottom:20px;">
+                               
+                                    50 ml e 1.7 FLOZ. SPRAY
+                                  
+                            </div>
+
+                            <div class="quantity-selector" style="display:flex; align-items:center; margin-bottom:25px;">
+                                <button class="quantity-btn minus" style="width:30px; height:30px; background:#f5f5f5; border:1px solid #ddd; font-size:16px; cursor:pointer;">-</button>
+                                <input type="text" class="quantity-input" value="1" style="width:40px; height:28px; text-align:center; border:1px solid #ddd; margin:0 5px;">
+                                <button class="quantity-btn plus" style="width:30px; height:30px; background:#f5f5f5; border:1px solid #ddd; font-size:16px; cursor:pointer;">+</button>
+                            </div>
+
+                            <button class="add-to-cart" onclick="addToCart(${product.idPerfume})" 
+                                style="background:#000; color:#fff; border:none; padding:12px 25px; font-size:14px; text-transform:uppercase; letter-spacing:1px; cursor:pointer;">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                // Ajouter les écouteurs d'événements
+                document.getElementById('closeQuickView').addEventListener('click', closeQuickView);
+                
+                // Gestion de la quantité
+                const minusBtn = modal.querySelector('.quantity-btn.minus');
+                const plusBtn = modal.querySelector('.quantity-btn.plus');
+                const quantityInput = modal.querySelector('.quantity-input');
+                
+                minusBtn.addEventListener('click', () => {
+                    let value = parseInt(quantityInput.value);
+                    if (value > 1) {
+                        quantityInput.value = value - 1;
+                    }
+                });
+                
+                plusBtn.addEventListener('click', () => {
+                    let value = parseInt(quantityInput.value);
+                    quantityInput.value = value + 1;
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                modal.innerHTML = `
+                    <div style="background:#fff; padding:20px; border-radius:8px; max-width:500px; width:100%; text-align:center;">
+                        <p style="color:red; font-size:16px;">Error: Could not load product details.</p>
+                        <button onclick="closeQuickView()" style="margin-top:15px; padding:8px 15px; background:#000; color:#fff; border:none; cursor:pointer;">
+                            Close
+                        </button>
+                    </div>
+                `;
+            });
+    }
+
+    function closeQuickView() {
+        document.getElementById('quickViewModal').style.display = 'none';
+    }
+
+    // Cart functionality (placeholder - implement as needed)
+    function addToCart(productId) {
+        alert('Added product ' + productId + ' to cart');
+        // Implement actual cart functionality here
+    }
+
+    document.querySelectorAll('.add-to-wishlist').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const id = this.dataset.id;
+        const icon = this.querySelector('i');
+        fetch('wishlist.php?action=add&id=' + id, { method: 'GET' })
+          .then(res => {
+            icon.classList.remove('far');
+            icon.classList.add('fas');
+            icon.style.color = '#c0392b';
+          });
+      });
+    });
+  </script>
 </body>
 </html>
