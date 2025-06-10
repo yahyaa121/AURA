@@ -1,4 +1,6 @@
-<?php include('include/header.php'); ?>
+<?php 
+include "include/init.php";
+include('include/header.php'); ?>
 
 <!-- FontAwesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -69,11 +71,12 @@
     position: relative;
     width: 100%;
     height: 250px;
-    display: flex;
+    padding-right:200px;
     align-items: center;
     justify-content: center;
     overflow: hidden;
   }
+  
 
   .product-image img {
     max-width: 100%;
@@ -190,7 +193,7 @@
   .product-icons {
     position: absolute;
     top: 10px;
-    right: 10px;
+    padding-left: 186px;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -226,7 +229,7 @@
     left: 50%;
     width: 80%;
     transform: translateX(-50%) translateY(20px);
-    background-image: linear-gradient(to right, #20c997, #17a2b8);
+    background-color: #0a2e38;
     color: #fff;
     border: none;
     padding: 8px 16px;
@@ -234,19 +237,38 @@
     cursor: pointer;
     border-radius: 4px;
     opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     z-index: 2;
-  }
+}
 
-  .product-card:hover .add-to-cart-btn {
+.product-card:hover .add-to-cart-btn {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
-  }
+}
 
-  .add-to-cart-btn:hover {
+.add-to-cart-btn:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    background-image: linear-gradient(to right, #1cbfa5, #109ca6);
-  }
+    background-color: #15414e; /* Paler version of #0a2e38 */
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  font-size: 24px;
+  margin: 40px 0;
+  position: relative;
+  justify-content: center;
+}
+
+.section-title::before,
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ccc; /* ou une autre couleur */
+  margin: 0 20px;
+}
+
 </style>
 
 <main>
@@ -261,100 +283,86 @@
   </section>
 <!-- Best Sellers Section -->
   <section class="section best-sellers">
-    <h2>Best sellers</h2>
+  <h2 class="section-title"><?= $lang['best_sellers'] ?></h2>
+
+
     <div class="product-grid">
 
-     <!-- Produit 1 -->
+    <?php
+require __DIR__ . "/database.php";
 
-  <div class="product-card">
-    <div class="product-image-frame">
-      <div class="product-image">
-        <img src="2.jpg" alt="Parfum Élégance" class="img-default">
-        <img src="hover2.jpg" alt="Parfum Élégance Hover" class="img-hover">
+// Vérification de la connexion
+if (!isset($mysqli) || !($mysqli instanceof mysqli)) {
+    die("Erreur : La connexion à la base de données a échoué");
+}
 
-        <div class="product-icons">
-          <i class="fas fa-eye" onclick="openQuickView()" title="Quick View"></i>
-          <i class="fas fa-heart"></i>
-        </div>
-        <button class="add-to-cart-btn">Ajouter au panier</button>
-      </div>
-    </div>
-    <p>Parfum Élégance</p>
-    <p>Maison Aura</p>
-    <p>59.90 €</p>
-  </div>
+try {
+     $query = "SELECT p.idPerfume, p.perfumeName, p.price, c.collectionName, pi.urlImage, pi.urlHover
+              FROM perfumes p
+              JOIN collections c ON p.idCollection = c.idCollection
+              JOIN perfumeimage pi ON p.idPerfume = pi.idPerfume
+              ORDER BY RAND() LIMIT 4"; 
+    
+    $result = $mysqli->query($query);
+    
+    if (!$result) {
+        die("Erreur de requête : " . $mysqli->error);
+    }
+    
+    $products = $result->fetch_all(MYSQLI_ASSOC);
+} catch (Exception $e) {
+    die("Erreur lors de la récupération des produits : " . $e->getMessage());
+}
+?>
 
+<!-- Affichage des produits -->
+<div class="product-grid">
+    <?php foreach ($products as $product): ?>
+    <div class="product-card">
+        <div class="product-image-frame">
+            <div class="product-image">
+              <a href="product.php?id=<?= $product['idPerfume'] ?>">
 
-<!-- Produit 2 -->
-<a href="product.php" style="text-decoration: none; color: inherit;">
-  <div class="product-card">
-    <div class="product-image-frame">
-      <div class="product-image">
-        <img src="6.jpg" alt="Mystic Oud" class="img-default">
-        <img src="hover6.jpg" alt="Mystic Oud Hover" class="img-hover">
+                <img src="perfumes/<?= htmlspecialchars($product['urlImage']) ?>" 
+                     alt="<?= htmlspecialchars($product['perfumeName']) ?>" 
+                     class="img-default">
+                <img src="perfumes/<?= htmlspecialchars($product['urlHover']) ?>" 
+                     alt="<?= htmlspecialchars($product['perfumeName']) ?> Hover" 
+                     class="img-hover"></a>
 
-        <div class="product-icons">
-          <i class="fas fa-eye" onclick="openQuickView()" title="Quick View"></i>
-          <i class="fas fa-heart"></i>
-        </div>
-        <button class="add-to-cart-btn">Ajouter au panier</button>
-      </div>
-    </div>
-    <p>Mystic Oud</p>
-    <p>Julien Parfums</p>
-    <p>72.00 €</p>
-  </div>
+                <div class="product-icons">
+                  <i class="fas fa-eye" onclick="openQuickView(<?= $product['idPerfume'] ?>)" title="Quick View"></i>
+                    
+            <?php
+$isInWishlist = in_array($product['idPerfume'], $_SESSION['wishlist'] ?? []);
+?>
+<a href="#" class="add-to-wishlist" data-id="<?= $product['idPerfume'] ?>" title="Ajouter à la wishlist">
+  <i class="<?= $isInWishlist ? 'fas' : 'far' ?> fa-heart wishlist-heart" style="<?= $isInWishlist ? 'color:#c0392b;' : '' ?>"></i>
 </a>
-
-<!-- Produit 3 -->
-<a href="product.php" style="text-decoration: none; color: inherit;">
-  <div class="product-card">
-    <div class="product-image-frame">
-      <div class="product-image">
-        <img src="image/3.jpg" alt="Fleur de Lune" class="img-default">
-        <img src="hover3.jpg" alt="Fleur de Lune Hover" class="img-hover">
-
-        <div class="product-icons">
-          <i class="fas fa-eye" onclick="openQuickView()" title="Quick View"></i>
-          <i class="fas fa-heart"></i>
+                </div>
+                <button class="add-to-cart-btn" 
+                        onclick="addToCart(<?= $product['idPerfume'] ?>)">
+                    <?= $lang['add_to_cart'] ?>
+                </button>
+            </div>
         </div>
-        <button class="add-to-cart-btn">Ajouter au panier</button>
-      </div>
+        <p><?= htmlspecialchars($product['collectionName']) ?></p>
+        <p><?= htmlspecialchars($product['perfumeName']) ?></p>
+        <p><?= number_format($product['price'], 2, ',', ' ') ?> €</p>
     </div>
-    <p>Fleur de Lune</p>
-    <p>Luxe France</p>
-    <p>49.50 €</p>
-  </div>
-</a>
+    <?php endforeach; ?>
+</div>
 
-<!-- Produit 4 -->
-<a href="product.php" style="text-decoration: none; color: inherit;">
-  <div class="product-card">
-    <div class="product-image-frame">
-      <div class="product-image">
-        <img src="10.jpg" alt="Bois Intense" class="img-default">
-        <img src="hover8.jpg" alt="Bois Intense Hover" class="img-hover">
-
-        <div class="product-icons">
-          <i class="fas fa-eye" onclick="openQuickView()" title="Quick View"></i>
-          <i class="fas fa-heart"></i>
-        </div>
-        <button class="add-to-cart-btn">Ajouter au panier</button>
-      </div>
-    </div>
-    <p>Bois Intense</p>
-    <p>Essence Noble</p>
-    <p>65.00 €</p>
-  </div>
-</a>
 
     </div>
   </section>
-
+<div id="quickViewModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0;
+     background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999; padding:20px; box-sizing:border-box;">
+</div>
   <!-- Quote Section -->
   <section class="section quote">
     <blockquote>
-      <p>« I wanted to build a High Perfumery house where tradition meets the present".»</p>
+      <p><?=$lang["quote_text"]?></p>
       <cite>- Julien Sprecher</cite>
     </blockquote>
   </section>
@@ -365,78 +373,27 @@
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
       </p>
-      <a href="#">Discover</a>
+      <a href="#"> <?= $lang['add_to_cart'] ?></a>
     </div>
     <div class="description-image">
-      <img src="33.jpg" alt="Description Image">
+      <img src="perfumes/17-17.jpg" alt="Description Image">
     </div>
   </section>
 
   <!-- Categories Section -->
   <section class="section categories">
     <div class="category">
-      <img src="6.jpg" alt="Perfumes for Women" class="category-image">
-      <p>Perfumes for Women</p>
-      <a href="#">Discover</a>
+      <img src="perfumes/2.png" alt="Perfumes for Women" class="category-image">
+      <p> <?= $lang['perfumes_women'] ?></p>
+      <a href="#"> <?= $lang['discover'] ?></a>
     </div>
     <div class="category offset">
-      <img src="2.jpg" alt="Perfumes for Men" class="category-image">
-      <p>Perfumes for Men</p>
-      <a href="#">Discover</a>
+      <img src="perfumes/14.jpg" alt="Perfumes for Men" class="category-image">
+      <p> <?= $lang['perfumes_men'] ?></p>
+      <a href="#"> <?= $lang['discover'] ?></a>
     </div>
   </section>
- <!-- Quick View Modal -->
-<div id="quickViewModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0;
-     background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999; padding:20px; box-sizing:border-box;">
-
-  <div style="background:#fff; padding:20px; border-radius:12px; max-width:800px; width:100%;
-       box-shadow:0 10px 25px rgba(0,0,0,0.2); position:relative; overflow-y:auto; max-height:90vh; display:flex; flex-wrap:wrap; gap:20px;">
-
-    <!-- Close button -->
-    <button id="closeQuickView"
-      style="position:absolute; top:15px; right:15px; font-size:22px; font-weight:bold;
-      border:none; background:none; cursor:pointer; color:#666;">&times;</button>
-
-    <!-- Left: Product Image -->
-    <div style="flex:1 1 250px; text-align:center;">
-      <img src="10.jpg" alt="Product" style="max-width:100%; border-radius:8px;">
-    </div>
-
-    <!-- Right: Product Content -->
-    <div class="product-container" style="flex:1 1 400px; font-family:'Helvetica Neue',Arial,sans-serif; color:#333;">
-      <h1 class="product-title" style="font-size:24px; font-weight:300; letter-spacing:1px; margin-bottom:5px;">HUNDRED SILENT WAYS</h1>
-      <div class="collection" style="font-size:14px; color:#777; margin-bottom:20px;">Collection Rumi</div>
-      <div class="price-range" style="font-size:16px; margin-bottom:15px;">100$ – 370$</div>
-      <div class="fragrance-notes" style="font-size:14px; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px; color:#555;">FLORAL / GOURMAND / MUSKY</div>
-      <div class="product-type" style="font-size:14px; margin-bottom:20px; font-weight:300;">Extrait de Parfum</div>
-
-      <div class="size-options" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; font-size:14px;">
-        <div class="size-option"><span class="size-label" style="color:#777;">15 ml e 0.5 FLOZ. SPRAY</span></div>
-        <div class="size-option"><span class="size-label" style="color:#777;">50 ml e 1.7 FLOZ. SPRAY</span></div>
-        <div class="size-option"><span class="size-label" style="color:#777;">100 ml e 3.4 FLOZ. SPRAY</span></div>
-      </div>
-
-      <div class="size-selector" style="margin-bottom:20px;">
-        <label class="size-label" style="margin-right:10px; color:#777;">Size:</label>
-        <select class="size-select" style="padding:8px 12px; border:1px solid #ddd; border-radius:4px; background:#fff; min-width:200px;">
-          <option>Choose an option</option>
-          <option>15 ml e 0.5 FLOZ. SPRAY</option>
-          <option>50 ml e 1.7 FLOZ. SPRAY</option>
-          <option>100 ml e 3.4 FLOZ. SPRAY</option>
-        </select>
-      </div>
-
-      <div class="quantity-selector" style="display:flex; align-items:center; margin-bottom:25px;">
-        <button class="quantity-btn" style="width:30px; height:30px; background:#f5f5f5; border:1px solid #ddd; font-size:16px; cursor:pointer;">-</button>
-        <input type="text" class="quantity-input" value="1" style="width:40px; height:28px; text-align:center; border:1px solid #ddd; margin:0 5px;">
-        <button class="quantity-btn" style="width:30px; height:30px; background:#f5f5f5; border:1px solid #ddd; font-size:16px; cursor:pointer;">+</button>
-      </div>
-
-      <button class="add-to-cart" style="background:#000; color:#fff; border:none; padding:12px 25px; font-size:14px; text-transform:uppercase; letter-spacing:1px; cursor:pointer;">Add to Cart</button>
-    </div>
-
-  </div>
-</div>
+ 
 
 
   <!-- JavaScript pour carrousel -->
@@ -451,27 +408,126 @@
     }, 3600); // Change d'image toutes les 4 secondes
   </script>
 
-  <!-- JavaScript pour Quick View -->
-  <script>
+ <script>
+function openQuickView(productId) {
     const modal = document.getElementById('quickViewModal');
-    const closeBtn = document.getElementById('closeQuickView');
+    
+    // Afficher un indicateur de chargement
+    modal.innerHTML = '<div style="color:white; font-size:20px;">Chargement...</div>';
+    modal.style.display = 'flex';
+    
+    fetch('get_product_details.php?id=' + productId)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau');
+            }
+            return response.json();
+        })
+        .then(product => {
+            // Formatage du prix pour la plage (ajoutez 100€ au prix de base pour l'exemple)
+            const basePrice = parseFloat(product.price);
+            const priceRange = `${basePrice}€ – ${basePrice + 100}€`;
+            
+            // Remplir le modal avec le template exact
+            modal.innerHTML = `
+                <div style="background:#fff; padding:20px; border-radius:12px; max-width:800px; width:100%;
+                     box-shadow:0 10px 25px rgba(0,0,0,0.2); position:relative; overflow-y:auto; max-height:90vh; display:flex; flex-wrap:wrap; gap:20px;">
+                    
+                    <button id="closeQuickView"
+                      style="position:absolute; top:15px; right:15px; font-size:22px; font-weight:bold;
+                      border:none; background:none; cursor:pointer; color:#666;">&times;</button>
 
-    function openQuickView() {
-      modal.style.display = 'flex';
-    }
+                    <div style="flex:1 1 250px; text-align:center;">
+                        <img src="perfumes/${product.urlImage}" alt="${product.perfumeName}" style="max-width:100%; border-radius:8px;">
+                    </div>
 
-    function closeQuickView() {
-      modal.style.display = 'none';
-    }
+                    <div class="product-container" style="flex:1 1 400px; font-family:'Helvetica Neue',Arial,sans-serif; color:#333;">
+                        <h1 class="product-title" style="font-size:24px; font-weight:300; letter-spacing:1px; margin-bottom:5px;">${product.perfumeName}</h1>
+                        <div class="collection" style="font-size:14px; color:#777; margin-bottom:20px;">Collection ${product.collectionName}</div>
+                        <div class="price-range" style="font-size:16px; margin-bottom:15px;">${priceRange}</div>
+                        <div class="fragrance-notes" style="font-size:14px; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px; color:#555;">
+                            ${product.fragranceFamily }
+                        </div>
+                        <div class="product-type" style="font-size:14px; margin-bottom:20px; font-weight:300;">Extrait de Parfum</div>
 
-    closeBtn.addEventListener('click', closeQuickView);
+                        <div class="size-options" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; font-size:14px;">
+                           
+                            <div class="size-option"><span class="size-label" style="color:#777;">  ${product.season}</span></div>
+                           
+                        </div>
 
-    modal.addEventListener('click', function (e) {
-      if (e.target === modal) {
-        closeQuickView();
-      }
-    });
-  </script>
+                        <div class="size-selector" style="margin-bottom:20px;">
+                           
+                                50 ml e 1.7 FLOZ. SPRAY
+                              
+                        </div>
+
+                        <div class="quantity-selector" style="display:flex; align-items:center; margin-bottom:25px;">
+                            <button class="quantity-btn minus" style="width:30px; height:30px; background:#f5f5f5; border:1px solid #ddd; font-size:16px; cursor:pointer;">-</button>
+                            <input type="text" class="quantity-input" value="1" style="width:40px; height:28px; text-align:center; border:1px solid #ddd; margin:0 5px;">
+                            <button class="quantity-btn plus" style="width:30px; height:30px; background:#f5f5f5; border:1px solid #ddd; font-size:16px; cursor:pointer;">+</button>
+                        </div>
+
+                        <button class="add-to-cart" onclick="addToCart(${product.idPerfume})" 
+                            style="background:#000; color:#fff; border:none; padding:12px 25px; font-size:14px; text-transform:uppercase; letter-spacing:1px; cursor:pointer;">
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Ajouter les écouteurs d'événements
+            document.getElementById('closeQuickView').addEventListener('click', closeQuickView);
+            
+            // Gestion de la quantité
+            const minusBtn = modal.querySelector('.quantity-btn.minus');
+            const plusBtn = modal.querySelector('.quantity-btn.plus');
+            const quantityInput = modal.querySelector('.quantity-input');
+            
+            minusBtn.addEventListener('click', () => {
+                let value = parseInt(quantityInput.value);
+                if (value > 1) {
+                    quantityInput.value = value - 1;
+                }
+            });
+            
+            plusBtn.addEventListener('click', () => {
+                let value = parseInt(quantityInput.value);
+                quantityInput.value = value + 1;
+            });
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            modal.innerHTML = `
+                <div style="background:#fff; padding:20px; border-radius:8px; max-width:500px; width:100%; text-align:center;">
+                    <p style="color:red; font-size:16px;">Erreur: Impossible de charger les détails du produit.</p>
+                    <button onclick="closeQuickView()" style="margin-top:15px; padding:8px 15px; background:#000; color:#fff; border:none; cursor:pointer;">
+                        Fermer
+                    </button>
+                </div>
+            `;
+        });
+}
+
+function closeQuickView() {
+    document.getElementById('quickViewModal').style.display = 'none';
+}
+</script>
+<script>
+document.querySelectorAll('.add-to-wishlist').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    e.preventDefault();
+    const id = this.dataset.id;
+    const icon = this.querySelector('i');
+    fetch('wishlist.php?action=add&id=' + id, { method: 'GET' })
+      .then(res => {
+        icon.classList.remove('far');
+        icon.classList.add('fas');
+        icon.style.color = '#c0392b';
+      });
+  });
+});
+</script>
 
   <?php include('include/newsletter.php'); ?>
 </main>
