@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: May 26, 2025 at 03:09 PM
+-- Generation Time: Jun 09, 2025 at 01:38 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -59,7 +59,33 @@ CREATE TABLE IF NOT EXISTS `details` (
   PRIMARY KEY (`idDetail`),
   KEY `idOrder` (`idOrder`),
   KEY `idPerfume` (`idPerfume`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `details`
+--
+
+INSERT INTO `details` (`idDetail`, `quantity`, `price`, `idOrder`, `idPerfume`) VALUES
+(1, 2, 280.00, 1, 1),
+(2, 2, 240.00, 1, 2),
+(3, 1, 220.00, 2, 7),
+(4, 1, 240.00, 2, 8),
+(5, 1, 125.00, 3, 13),
+(6, 3, 110.00, 3, 14),
+(7, 2, 95.00, 4, 15),
+(8, 1, 120.00, 4, 16),
+(9, 1, 260.00, 5, 12),
+(10, 2, 125.00, 6, 13),
+(11, 2, 130.00, 6, 18),
+(12, 1, 240.00, 7, 2),
+(13, 1, 115.00, 8, 17),
+(14, 2, 260.00, 8, 3),
+(15, 1, 110.00, 8, 14),
+(16, 1, 280.00, 8, 11),
+(17, 1, 115.00, 9, 17),
+(18, 2, 320.00, 9, 5),
+(19, 1, 130.00, 9, 18),
+(20, 2, 280.00, 9, 11);
 
 -- --------------------------------------------------------
 
@@ -76,7 +102,19 @@ CREATE TABLE IF NOT EXISTS `discounts` (
   `idPerfume` int NOT NULL,
   PRIMARY KEY (`idDiscount`),
   KEY `idPerfume` (`idPerfume`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `discounts`
+--
+
+INSERT INTO `discounts` (`idDiscount`, `reduction`, `startDate`, `endDate`, `idPerfume`) VALUES
+(1, 10.00, '2025-06-01 00:00:00', '2025-06-30 23:59:59', 1),
+(2, 15.00, '2025-06-05 00:00:00', '2025-06-30 23:59:59', 3),
+(3, 20.00, '2025-06-10 00:00:00', '2025-06-30 23:59:59', 5),
+(4, 12.50, '2025-06-01 00:00:00', '2025-06-30 23:59:59', 7),
+(5, 18.00, '2025-06-15 00:00:00', '2025-06-30 23:59:59', 10),
+(6, 8.00, '2025-06-20 00:00:00', '2025-07-30 23:59:59', 13);
 
 -- --------------------------------------------------------
 
@@ -137,7 +175,22 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `idUser` int NOT NULL,
   PRIMARY KEY (`idOrder`),
   KEY `idUser` (`idUser`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`idOrder`, `orderDate`, `orderStatus`, `orderAddress`, `idUser`) VALUES
+(1, '2025-06-01 10:00:00', 'Pending', 'el waha n50', 1),
+(2, '2025-06-02 11:30:00', 'Shipped', 'el waha n51', 2),
+(3, '2025-06-03 14:45:00', 'Delivered', 'el waha n50', 1),
+(4, '2025-06-04 16:20:00', 'Pending', 'el waha n51', 2),
+(5, '2025-06-06 18:42:05', 'Pending', 'el waha n88', 1),
+(6, '2025-06-06 18:45:28', 'Pending', 'el waha n12', 1),
+(7, '2025-06-06 18:50:19', 'Pending', '', 1),
+(8, '2025-06-07 16:26:06', 'Pending', 'el waha n55', 2),
+(9, '2025-06-09 13:02:20', 'Pending', 'el waha n50', 1);
 
 -- --------------------------------------------------------
 
@@ -215,12 +268,12 @@ INSERT INTO `perfumes` (`idPerfume`, `perfumeName`, `description`, `descriptionF
 (4, 'Fleur du Desert', 'An exotic floral fragrance inspired by the mysterious beauty of desert blooms. Cardamom and pink pepper add spice, leading into a lush heart of jasmine and orange blossom. The dry down reveals smoky oud and rich myrrh, creating a warm, sensual experience. A perfect scent for cold seasons or special evenings. Captivating and opulent, it leaves a lasting impression.', 'Un parfum floral exotique inspiré par la beauté mystérieuse des fleurs du désert. Cardamome et poivre rose apportent du piquant, suivis par un cœur de jasmin et de fleur d’oranger. Le fond révèle un oud fumé et une myrrhe riche pour une expérience sensuelle et enveloppante.', 270.00, 45, 'Female', 'Floral ', 'Floral ', 'Fall, Winter', 'Automne, Hiver', '2025-05-13 18:14:39', 1),
 (5, 'Ombre Nomade', 'A deep and intense fragrance for those who seek mystery and power. Rose and saffron open the scent with dark floral spice, while agarwood and geranium build a rich heart. Amber and incense dominate the base, wrapping the skin in an aura of luxury. Ideal for confident personalities and nighttime wear. It is seductive, bold, and undeniably luxurious.', 'Un parfum profond et intense qui évoque le mystère. L’ouverture mêle rose et safran, suivie d’un cœur boisé d’agarwood et de géranium. Le fond chaud et résineux d’ambre et d’encens laisse un sillage envoûtant et puissant.', 320.00, 40, 'Unisex', 'Woody ', 'Boisé ', 'Fall, Winter', 'Automne, Hiver', '2025-05-13 18:15:39', 1),
 (6, 'Apogée', 'A luminous floral bouquet that captures the gentle elegance of springtime. With lily of the valley and bergamot at the top, it blooms into magnolia and jasmine. A soft base of white musk and cedarwood adds balance and comfort. This fragrance evokes purity, serenity, and fresh beginnings. A beautiful companion for daylight and calm moments.', 'Un bouquet floral lumineux qui incarne la pureté et l’élégance du printemps. Muguet et bergamote ouvrent la composition, suivis par un cœur de magnolia et de jasmin. Le fond doux de musc blanc et de cèdre apporte une touche délicate.', 250.00, 55, 'Female', 'Floral', 'Floral', 'Spring, Summer', 'Printemps, Été', '2025-05-13 18:15:39', 1),
-(7, 'Bal d\'Afrique', 'A joyful and radiant fragrance inspired by the rhythms and colors of Africa. Opening with African marigold and bergamot, it reveals heart notes of violet and cyclamen. The base of vetiver and Moroccan cedarwood adds depth and sensuality. It’s a warm, sunny scent full of vitality and culture. Perfect for spring, summer, and unforgettable adventures.', 'Un parfum solaire et vibrant inspiré par les paysages africains. Le souci africain et la bergamote ouvrent sur un cœur floral doux de violette et de cyclamen. Le fond boisé chaud de cèdre et vétiver enrobe la peau avec sensualité.', 220.00, 60, 'Unisex', 'Spicy', 'epicée', 'Spring, Summer', 'Printemps, Été', '2025-05-13 18:19:11', 2),
-(8, 'Black Saffron', 'A daring and captivating fragrance that fuses contrasts into a harmonious whole. Saffron and juniper berries spark the opening, while black violet and leather deepen the heart. A smoky, woody base of vetiver and blond woods anchors the composition. Bold and modern, this scent celebrates individuality. Ideal for those who stand out in a crowd.', 'Un parfum contrasté et audacieux. Le safran épicé et les baies de genévrier s’ouvrent sur un cœur sombre de violette noire et de cuir. Le fond boisé et fumé de vétiver et bois blonds crée une signature unique.', 240.00, 45, 'Unisex', 'Spicy Woody', 'Épicé ', 'Fall', 'Automne, Hiver', '2025-05-13 18:19:11', 2),
-(9, 'Mojave Ghost', 'An elusive and airy fragrance inspired by the desert’s soft winds and rare flora. Ambrette and sapodilla give an unusual fruity-floral lift, followed by a graceful heart of magnolia and violet. Sandalwood and cedarwood enrich the base with warmth. Ethereal yet grounded, it is ideal for all-year wear. A gentle and mysterious companion for the soul.', 'Une fragrance aérienne et mystérieuse inspirée du désert. Ambrette et sapotille ouvrent la danse, suivis d’un cœur floral de magnolia et violette. Le fond chaud de bois de santal et de cèdre offre une sensation douce et profonde.', 230.00, 50, 'Unisex', 'Woody', 'Boisé', 'All Year', 'Toute l\'année', '2025-05-13 18:19:11', 2),
+(7, 'Bal d\'Afrique', 'A joyful and radiant fragrance inspired by the rhythms and colors of Africa. Opening with African marigold and bergamot, it reveals heart notes of violet and cyclamen. The base of vetiver and Moroccan cedarwood adds depth and sensuality. It’s a warm, sunny scent full of vitality and culture. Perfect for spring, summer, and unforgettable adventures.', 'Un parfum solaire et vibrant inspiré par les paysages africains. Le souci africain et la bergamote ouvrent sur un cœur floral doux de violette et de cyclamen. Le fond boisé chaud de cèdre et vétiver enrobe la peau avec sensualité.', 220.00, 60, 'Female', 'Spicy', 'epicée', 'Spring, Summer', 'Printemps, Été', '2025-05-13 18:19:11', 2),
+(8, 'Black Saffron', 'A daring and captivating fragrance that fuses contrasts into a harmonious whole. Saffron and juniper berries spark the opening, while black violet and leather deepen the heart. A smoky, woody base of vetiver and blond woods anchors the composition. Bold and modern, this scent celebrates individuality. Ideal for those who stand out in a crowd.', 'Un parfum contrasté et audacieux. Le safran épicé et les baies de genévrier s’ouvrent sur un cœur sombre de violette noire et de cuir. Le fond boisé et fumé de vétiver et bois blonds crée une signature unique.', 240.00, 45, 'Female', 'Amber ', 'Épicé ', 'Fall', 'Automne, Hiver', '2025-05-13 18:19:11', 2),
+(9, 'Mojave Ghost', 'An elusive and airy fragrance inspired by the desert’s soft winds and rare flora. Ambrette and sapodilla give an unusual fruity-floral lift, followed by a graceful heart of magnolia and violet. Sandalwood and cedarwood enrich the base with warmth. Ethereal yet grounded, it is ideal for all-year wear. A gentle and mysterious companion for the soul.', 'Une fragrance aérienne et mystérieuse inspirée du désert. Ambrette et sapotille ouvrent la danse, suivis d’un cœur floral de magnolia et violette. Le fond chaud de bois de santal et de cèdre offre une sensation douce et profonde.', 230.00, 50, 'Male', 'Woody', 'Boisé', 'All Year', 'Toute l\'année', '2025-05-13 18:19:11', 2),
 (10, 'Super Cedar', 'A minimalist yet expressive woody scent that highlights the strength of simplicity. It starts with fresh rose petals and green galbanum, settling into the warmth of cedarwood and musk. Haitian vetiver and amber form the base, leaving a dry, smoky trail. Clean, natural, and deeply refined. Perfect for lovers of straightforward elegance.', 'Un parfum minimaliste et élégant axé sur la noblesse du cèdre. Les pétales de rose et le galbanum ouvrent la fragrance, avant de laisser place à un cœur de bois de cèdre et musc. Le fond mêle vétiver haïtien et ambre pour un effet boisé sec.', 210.00, 55, 'Unisex', 'Woody', 'Boisé', 'Fall, Winter', 'Automne, Hiver', '2025-05-13 18:19:11', 2),
 (11, 'Rouge Chaotique', 'A luxurious extrait de parfum that radiates intensity and sensuality. It begins with bold blackcurrant and Sichuan pepper, flows into a heart of osmanthus and patchouli, and finishes with dark amber and sweet vanilla. Rich, spicy, and hypnotic, it lingers long after application. A powerful scent for bold personalities. Ideal for evening and winter wear.', 'Un extrait riche et intense aux notes fruitées et ambrées. Cassis et poivre de Sichuan s’ouvrent sur un cœur d’osmanthus et de patchouli. Le fond de vanille noire et d’ambre profond donne un caractère enveloppant et puissant.', 280.00, 35, 'Unisex', 'Amber ', 'Ambré ', 'Fall, Winter', 'Automne, Hiver', '2025-05-13 18:19:11', 2),
-(12, 'Sellier', 'A smoky and aromatic leather scent reminiscent of classic English saddlery. Juniper and bergamot offer freshness, while black tea and leather dominate the heart. The drydown of birch tar and amber creates an earthy, smoky character. Masculine, timeless, and elegant. Perfect for formal wear or cooler days.', 'Un cuir fumé et raffiné qui évoque l’élégance des selles anglaises. Genévrier et bergamote ouvrent sur un cœur de thé noir et de cuir. Le fond de goudron de bouleau et d’ambre offre une touche rustique et noble.', 260.00, 40, 'Unisex', 'Leather ', 'Cuir ', 'Fall, Winter', 'Automne, Hiver', '2025-05-15 17:00:00', 2),
+(12, 'Sellier', 'A smoky and aromatic leather scent reminiscent of classic English saddlery. Juniper and bergamot offer freshness, while black tea and leather dominate the heart. The drydown of birch tar and amber creates an earthy, smoky character. Masculine, timeless, and elegant. Perfect for formal wear or cooler days.', 'Un cuir fumé et raffiné qui évoque l’élégance des selles anglaises. Genévrier et bergamote ouvrent sur un cœur de thé noir et de cuir. Le fond de goudron de bouleau et d’ambre offre une touche rustique et noble.', 260.00, 40, 'Male', 'Leather ', 'Cuir ', 'Fall, Winter', 'Automne, Hiver', '2025-05-15 17:00:00', 2),
 (13, 'Le Male Le Parfum', 'A bold reinterpretation of the original Le Male, this parfum version is deeper and more mysterious. It opens with spicy cardamom and fresh mint, transitions into iris and lavender, and ends on a warm blend of vanilla and woods. Both modern and timeless, this scent speaks to strong personalities. Long-lasting and seductive, perfect for night.', 'Une version plus intense du classique Le Male. Cardamome et menthe ouvrent le parfum, suivis par un cœur poudré d’iris et de lavande. Le fond de vanille et bois chauds donne une longue tenue et un caractère envoûtant.', 125.00, 50, 'Male', 'Spicy', 'epicée', 'Fall, Winter', 'Automne, Hiver', '2025-05-15 18:00:00', 3),
 (14, 'Ultra Male', 'An ultra-sensual composition made for seduction. Juicy pear and cool mint open the scent, followed by aromatic lavender and spicy cinnamon. The vanilla and amber base leaves a smooth, addictive trail. Bold, sweet, and youthful. A true statement fragrance for bold evenings and magnetic charm.', 'Un parfum ultra-séduisant qui marie fraîcheur et gourmandise. Poire juteuse et menthe s’ouvrent sur un cœur lavande-cannelle. Le fond vanillé et ambré laisse un sillage intense et addictif.', 110.00, 65, 'Male', 'Amber ', 'Ambré ', 'All Year', 'Toute l\'année', '2025-05-15 18:00:00', 3),
 (15, 'Scandal Pour Homme', 'A modern masculine fragrance that fuses tradition and rebellion. It begins with fresh bergamot and sage, moves through tobacco and creamy tonka bean, and settles into amber and sandalwood. Warm and full-bodied, it captures attention instantly. Ideal for winter nights and strong personalities. Intense yet comforting.', 'Une fragrance masculine audacieuse avec des notes miellées et boisées. Bergamote et sauge s’ouvrent sur un cœur de tabac et fève tonka. Le fond d’ambre et de bois de santal donne une touche chaleureuse et puissante.', 95.00, 70, 'Male', 'Citrus ', 'Citron', 'Fall, Winter', 'Automne, Hiver', '2025-05-15 18:00:00', 3),
@@ -273,8 +326,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`idUser`, `username`, `email`, `adresse`, `password`, `subscriptionDate`, `resetToken`, `tokenDate`) VALUES
-(1, 'Yahya', 'yahyahallal85@gmail.com', 'el waha n50', '$2y$10$utXSFQvOo63AGOX0vlf0wOA6.gZ3fRmNp5hWDcdhzEJh4mf47FQ6C', '2025-05-20 14:16:20', '1b77688ea66af60349239fa979e7213dfa6b57dc9c2d7412bf404dfafdf6811e', '2025-05-26 10:40:38'),
-(2, 'Mouhsine', 'khoukhmouhssine1@gmail.com', 'el waha n51', '$2y$10$iVj.DNmJlwh0hjAfm/5lfeXZMaBA2aOPVqLecmEYQHz0G4ipB.Gii', '2025-05-21 11:35:09', 'b6d5692c6a4da16ee407e8f38e9e8cea6005ea272334e84b402198245bdf397a', '2025-05-24 19:16:55');
+(1, 'Yahya Hallal', 'yahyahallal85@gmail.com', 'el waha n50', '$2y$10$utXSFQvOo63AGOX0vlf0wOA6.gZ3fRmNp5hWDcdhzEJh4mf47FQ6C', '2025-05-20 14:16:20', '726a5ba76bb2123405a740a5dd4d0c0981dde7e8106a2a857cbde1404380ec3d', '2025-06-07 14:02:59'),
+(2, 'Mouhsine Elkhoukh', 'khoukhmouhssine1@gmail.com', 'el waha n51', '$2y$10$iVj.DNmJlwh0hjAfm/5lfeXZMaBA2aOPVqLecmEYQHz0G4ipB.Gii', '2025-05-21 11:35:09', 'b6d5692c6a4da16ee407e8f38e9e8cea6005ea272334e84b402198245bdf397a', '2025-05-24 19:16:55');
 
 -- --------------------------------------------------------
 
