@@ -1,10 +1,33 @@
 <?php 
 include "include/init.php";
-include('include/header.php'); ?>
+include('include/header.php'); 
+
+$token = $_GET["token"];
+$token_hash = hash("sha256", $token);
+
+$mysqli = require __DIR__ . "/database.php";
+
+$sql = "SELECT * FROM users WHERE resetToken = ?";
+$stmt = $mysqli->prepare($sql);
+$stmt->bind_param("s", $token_hash);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+if ($user === null) {
+    die("token not found");
+}
+
+if (strtotime($user["tokenDate"]) <= time()) {
+    die("token has expired");
+}
+?>
+
 
 <style>
   body {
-    font-family: 'Segoe UI', 'Futura PT Medium', Arial, sans-serif;
+    font-family:'Futura PT Medium', Arial, sans-serif;
     background: linear-gradient(120deg, #e8f8f9 0%, #fafdff 100%);
     margin: 0;
     min-height: 100vh;
@@ -45,7 +68,7 @@ include('include/header.php'); ?>
     font-weight: bold;
     margin-left: 2px;
   }
-  input[type="email"] {
+  input[type="email"], input[type="password"] {
     width: 100%;
     padding: 13px 15px;
     font-size: 15px;
@@ -57,7 +80,7 @@ include('include/header.php'); ?>
     outline: none;
     box-shadow: 0 1px 6px rgba(45,175,186,0.06);
   }
-  input[type="email"]:focus {
+  input[type="email"]:focus, input[type="password"]:focus {
     border-color: #2daeba;
     box-shadow: 0 2px 10px rgba(45,175,186,0.13);
     background: #f3fcff;
@@ -90,19 +113,28 @@ include('include/header.php'); ?>
     }
   }
 </style>
+
 <div class="reset-container">
-  <h2>Reset Your Password</h2>
-  <form action="send-password-reset.php" method="post">
-    <div class="form-group">
-      <label for="email">
-        Email Address <span class="required">*</span>
-      </label>
-      <span class="required-label"></span>
-      <input type="email" id="email" name="email" required placeholder="Enter your email address to reset your password">
-    </div>
-    <button type="submit" name="reset">Reset Password</button>
-  </form>
+  <h2>Reset Password</h2>
+  <?php if ($token): ?>
+    <form action="reset-pwd-database.php" method="post">
+      <div class="form-group">
+        <label for="password">
+          New Password <span class="required">*</span>
+        </label>
+        <input type="password" id="password" name="password" required placeholder="Enter a new password">
+      </div>
+      <div class="form-group">
+        <label for="password_confirm">
+          Confirm Password <span class="required">*</span>
+        </label>
+        <input type="password" id="password_confirm" name="password_confirm" required placeholder="Confirm your new password">
+      </div>
+      <input type="hidden" name="token" value="<?php echo htmlspecialchars($token); ?>">
+      <button type="submit" name="change_password">Changer le mot de passe</button>
+    </form>
+  <?php endif; ?>
 </div>
-<?php include('include/newsletter.php'); ?>
-<br><br><br><br>
+
+<br><br><br><br><br><br><br><br><br><br><br><br>
 <?php include('include/footer.php'); ?>

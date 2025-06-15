@@ -37,8 +37,8 @@ $session = \Stripe\Checkout\Session::create([
     'payment_method_types' => ['card'],
     'line_items' => $line_items,
     'mode' => 'payment',
-    'success_url' => 'http://localhost/PFE/successful_payment.php',
-    'cancel_url' => 'http://localhost/PFE/checkout.php',
+    'success_url' => 'http://localhost/3/successful_payment.php',
+    'cancel_url' => 'http://localhost/3/checkout.php',
 ]);
 
 header("Location: " . $session->url);
