@@ -9,9 +9,9 @@ A dynamic PHP-based e-commerce website specialized in selling perfumes. It inclu
 - Product listing and filters (by gender, price, season, olfactory notes)
 - Product details page
 - Shopping cart functionality
-- Secure checkout with Stripe
+- Secure checkout with Stripe & Paypal
 - Email notifications using PHPMailer
-- Responsive and modern design
+- modern design
 
 ---
 
