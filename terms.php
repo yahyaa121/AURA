@@ -8,7 +8,6 @@ include "include/header.php";
   <meta charset="UTF-8">
   <title>Terms & Conditions - Aura</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
   <link rel="stylesheet" href="terms.css">
 </head>
 <body>
