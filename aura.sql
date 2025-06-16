@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 09, 2025 at 01:38 PM
+-- Generation Time: Jun 16, 2025 at 03:05 PM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.18
 
@@ -46,6 +46,31 @@ INSERT INTO `collections` (`idCollection`, `collectionName`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `contact`
+--
+
+DROP TABLE IF EXISTS `contact`;
+CREATE TABLE IF NOT EXISTS `contact` (
+  `idContact` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) NOT NULL,
+  `email` varchar(40) NOT NULL,
+  `phone` varchar(50) NOT NULL,
+  `subject` text NOT NULL,
+  `message` text NOT NULL,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`idContact`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `contact`
+--
+
+INSERT INTO `contact` (`idContact`, `name`, `email`, `phone`, `subject`, `message`, `created_at`) VALUES
+(1, 'Pablo', 'pabloescobar@gmail.com', '073637994', 'requesting informations', 'Hello , i would like to know .....', '2025-06-15 14:03:19');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `details`
 --
 
@@ -59,33 +84,24 @@ CREATE TABLE IF NOT EXISTS `details` (
   PRIMARY KEY (`idDetail`),
   KEY `idOrder` (`idOrder`),
   KEY `idPerfume` (`idPerfume`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `details`
 --
 
 INSERT INTO `details` (`idDetail`, `quantity`, `price`, `idOrder`, `idPerfume`) VALUES
-(1, 2, 280.00, 1, 1),
-(2, 2, 240.00, 1, 2),
 (3, 1, 220.00, 2, 7),
 (4, 1, 240.00, 2, 8),
-(5, 1, 125.00, 3, 13),
-(6, 3, 110.00, 3, 14),
 (7, 2, 95.00, 4, 15),
 (8, 1, 120.00, 4, 16),
-(9, 1, 260.00, 5, 12),
-(10, 2, 125.00, 6, 13),
-(11, 2, 130.00, 6, 18),
-(12, 1, 240.00, 7, 2),
 (13, 1, 115.00, 8, 17),
 (14, 2, 260.00, 8, 3),
 (15, 1, 110.00, 8, 14),
 (16, 1, 280.00, 8, 11),
-(17, 1, 115.00, 9, 17),
-(18, 2, 320.00, 9, 5),
-(19, 1, 130.00, 9, 18),
-(20, 2, 280.00, 9, 11);
+(27, 1, 130.00, 13, 18),
+(28, 1, 115.00, 13, 17),
+(29, 2, 95.00, 13, 15);
 
 -- --------------------------------------------------------
 
@@ -175,22 +191,17 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `idUser` int NOT NULL,
   PRIMARY KEY (`idOrder`),
   KEY `idUser` (`idUser`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`idOrder`, `orderDate`, `orderStatus`, `orderAddress`, `idUser`) VALUES
-(1, '2025-06-01 10:00:00', 'Pending', 'el waha n50', 1),
 (2, '2025-06-02 11:30:00', 'Shipped', 'el waha n51', 2),
-(3, '2025-06-03 14:45:00', 'Delivered', 'el waha n50', 1),
 (4, '2025-06-04 16:20:00', 'Pending', 'el waha n51', 2),
-(5, '2025-06-06 18:42:05', 'Pending', 'el waha n88', 1),
-(6, '2025-06-06 18:45:28', 'Pending', 'el waha n12', 1),
-(7, '2025-06-06 18:50:19', 'Pending', '', 1),
 (8, '2025-06-07 16:26:06', 'Pending', 'el waha n55', 2),
-(9, '2025-06-09 13:02:20', 'Pending', 'el waha n50', 1);
+(13, '2025-06-16 10:00:38', 'Pending', 'Elwaha n77', 3);
 
 -- --------------------------------------------------------
 
@@ -225,12 +236,12 @@ INSERT INTO `perfumeimage` (`idImage`, `urlImage`, `urlHover`, `idPerfume`) VALU
 (10, '10.jpg', '10-10.jpg', 10),
 (11, '11.jpg', '11-11.jpg', 11),
 (12, '12.jpg', '12-12.jpg', 12),
-(13, '13.jpg', '13-13.jpg', 13),
-(14, '14.jpg', '14-14.jpg', 14),
-(15, '15.jpg', '15-15.jpg', 15),
-(16, '16.jpg', '16-16.jpg', 16),
-(17, '17.jpg', '17-17.jpg', 17),
-(18, '18.jpg', '18-18.jpg', 18);
+(13, '13.png', '13-13.png', 13),
+(14, '14.png', '14-14.png', 14),
+(15, '15.png', '15-15.png', 15),
+(16, '16.png', '16-16.png', 16),
+(17, '17.png', '17-17.png', 17),
+(18, '18.png', '18-18.png', 18);
 
 -- --------------------------------------------------------
 
@@ -284,25 +295,6 @@ INSERT INTO `perfumes` (`idPerfume`, `perfumeName`, `description`, `descriptionF
 -- --------------------------------------------------------
 
 --
--- Table structure for table `reviews`
---
-
-DROP TABLE IF EXISTS `reviews`;
-CREATE TABLE IF NOT EXISTS `reviews` (
-  `idReview` int NOT NULL AUTO_INCREMENT,
-  `mark` int NOT NULL,
-  `comment` text,
-  `reviewDate` datetime NOT NULL,
-  `idUser` int NOT NULL,
-  `idPerfume` int NOT NULL,
-  PRIMARY KEY (`idReview`),
-  KEY `idUser` (`idUser`),
-  KEY `idPerfume` (`idPerfume`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
@@ -319,15 +311,16 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`idUser`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`idUser`, `username`, `email`, `adresse`, `password`, `subscriptionDate`, `resetToken`, `tokenDate`) VALUES
-(1, 'Yahya Hallal', 'yahyahallal85@gmail.com', 'el waha n50', '$2y$10$utXSFQvOo63AGOX0vlf0wOA6.gZ3fRmNp5hWDcdhzEJh4mf47FQ6C', '2025-05-20 14:16:20', '726a5ba76bb2123405a740a5dd4d0c0981dde7e8106a2a857cbde1404380ec3d', '2025-06-07 14:02:59'),
-(2, 'Mouhsine Elkhoukh', 'khoukhmouhssine1@gmail.com', 'el waha n51', '$2y$10$iVj.DNmJlwh0hjAfm/5lfeXZMaBA2aOPVqLecmEYQHz0G4ipB.Gii', '2025-05-21 11:35:09', 'b6d5692c6a4da16ee407e8f38e9e8cea6005ea272334e84b402198245bdf397a', '2025-05-24 19:16:55');
+(2, 'Mouhsine Elkhoukh', 'khoukhmouhssine1@gmail.com', 'el waha n51', '$2y$10$iVj.DNmJlwh0hjAfm/5lfeXZMaBA2aOPVqLecmEYQHz0G4ipB.Gii', '2025-05-21 11:35:09', 'cf829fb35700a453d3f374f698c8f7773897f8469be1fa5dedaf1a3f77b2b3bf', '2025-06-15 14:49:59'),
+(3, 'Yahya Hallal', 'yahyahallal85@gmail.com', 'Elwaha n77', '$2y$10$1k/xS3JLMm7f0eUkdpGlxeDCqtgwbktA8A/hMOXZKFX5krJkK1Pzi', '2025-06-15 20:15:13', NULL, NULL),
+(4, 'Pablo', 'practicedev3@gmail.com', 'Colombia', '$2y$10$sPrMHze8HaS/ARHXCs6pRO3W4.o01BwH9yi2g7KTx51csC/PQknW6', '2025-06-16 09:46:27', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -386,13 +379,6 @@ ALTER TABLE `perfumeimage`
 --
 ALTER TABLE `perfumes`
   ADD CONSTRAINT `fk_perfumes_collection` FOREIGN KEY (`idCollection`) REFERENCES `collections` (`idCollection`) ON DELETE SET NULL;
-
---
--- Constraints for table `reviews`
---
-ALTER TABLE `reviews`
-  ADD CONSTRAINT `fk_reviews_perfume` FOREIGN KEY (`idPerfume`) REFERENCES `perfumes` (`idPerfume`) ON DELETE CASCADE,
-  ADD CONSTRAINT `fk_reviews_user` FOREIGN KEY (`idUser`) REFERENCES `users` (`idUser`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `wishlist`
