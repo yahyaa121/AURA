@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+$error = null;
 if (isset($_SESSION['idUser'])) {
     // User already logged in, redirect to loginout.php
     header("Location: loginout.php");
@@ -7,10 +9,10 @@ if (isset($_SESSION['idUser'])) {
 }
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $mysqli = require __DIR__ . "/database.php";
-    $email = $_POST["email"] ?? '';
+    $email = strtolower(trim($_POST["email"] ?? ''));
     $password = $_POST["password"] ?? '';
 
-    // Requête préparée
+    // Prepared statement
     $stmt = $mysqli->prepare("SELECT * FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -20,209 +22,40 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($user && password_verify($password, $user["password"])) {
         session_regenerate_id();
         $_SESSION["idUser"] = $user["idUser"];
-        header("Location: loginout.php"); // redirection après connexion\
         $_SESSION['email'] = $user['email'];
         $_SESSION['username'] = $user['username'];
+        header("Location: loginout.php"); // redirect after login
         exit;
-    } 
+    } else {
+        $error = "Incorrect email or password. Please try again.";
+    }
 }
 ?>
 
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion</title>
+    <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .login-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 1400px;
-            margin: 60px auto;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .login-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .login-subtitle {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            width: 100%;
-            max-width: 400px;
-            text-align: left;
-        }
-
-        .form-group input {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .forgot-password {
-            text-align: right;
-            margin-bottom: 25px;
-            width: 100%;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .forgot-password a {
-            color: #666;
-            font-size: 12px;
-            text-decoration: none;
-            position: relative;
-            display: inline-block;
-            transition: color 0.3s ease;
-        }
-
-        .forgot-password a::after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: -2px;
-            width: 0;
-            height: 1px;
-            background-color: #666;
-            transition: width 0.3s ease;
-        }
-
-        .forgot-password a:hover::after {
-            width: 100%;
-        }
-
-        .login-button {
-            background-color: black;
-            color: white;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            max-width: 400px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 25px;
-        }
-
-        .login-button:hover {
-            background-color: #333;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
-            transform: translateY(-2px);
-        }
-
-        .create-account {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .create-account a {
-            text-decoration: none;
-            color: #000;
-        }
-
-        .benefits {
-            display: flex;
-            margin-left: 130px;
-            margin-top: 140px;
-            font-size: 20px;
-            flex-wrap: wrap;
-        }
-
-        .benefit {
-            text-align: center;
-            width: 30%;
-            min-width: 200px;
-            margin-bottom: 15px;
-        }
-
-        .benefit-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .benefit-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .benefit-subtitle {
-            color: #888;
-            font-size: 14px;
-        }
-
-        .newsletter-container {
-            background-color: rgb(192, 191, 191);
-            width: 100%;
-            padding: 20px 0;
-            margin-top: auto;
-        }
-
-        header, footer {
-            background-color: white;
-            text-align: center;
-            width: 100%;
-        }
-
-        .error {
-            color: #d93025;
-            background-color: #fce8e6;
-            border: 1px solid #f5c6cb;
-            padding: 12px;
-            margin: 20px auto -40px;
-            border-radius: 5px;
-            max-width: 400px;
-            font-weight: bold;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="login.css">
 </head>
 <body>
     <header>
         <?php include('include/header.php'); ?>
     </header>
 
+    <?php if ($error): ?>
+        <div class="error">
+            <i class="fas fa-exclamation-circle" style="margin-right:8px;"></i>
+            <?= htmlspecialchars($error) ?>
+        </div>
+    <?php endif; ?>
+
     <form method="post" class="login-container" novalidate>
-        <div class="login-title">CONNEXION</div>
+        <div class="login-title">LOGIN</div>
         <div class="login-subtitle">Please enter your email and password:</div>
 
         <div class="form-group">
@@ -238,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <a href="reset_request.php">Forgotten password?</a>
         </div>
 
-        <button type="submit" class="login-button">Connection</button>
+        <button type="submit" class="login-button">Login</button>
 
         <div class="create-account">
             <a href="register.php">CREATE AN ACCOUNT</a>
@@ -266,9 +99,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <div class="newsletter-container">
         <?php include('include/newsletter.php'); ?>
     </div>
-
+<br><br><br><br>
     <footer>
-        <?php include('include/footer.php'); ?>
+        <div class="footer-content">
+            <?php include('include/footer.php'); ?>
+        </div>
     </footer>
 </body>
 </html>

@@ -1,5 +1,6 @@
 <?php
 session_start();
+include('include/init.php');
 
 // Si non connecté, redirection vers la page de connexion
 if (!isset($_SESSION["idUser"])) {
@@ -18,24 +19,34 @@ $userEmail = $_SESSION['email'] ?? '';
     <meta charset="UTF-8" />
     <title>Bienvenue sur votre espace</title>
     <style>
-        /* Reset simple */
-        * {
-            box-sizing: border-box;
+        :root {
+            --primary:rgb(2, 116, 127);
+            --primary-light: #f4f6fa;
+            --bg-light: #f5f7fa;
+            --bg-gradient: #f4f6fa;
+            --text-main: #23272f;
+            --text-secondary: #6b7280;
+            --card-bg: #fff;
+            --card-radius: 26px;
+            --shadow: 0 8px 32px rgba(60, 72, 88, 0.13);
         }
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            color: #333;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-main);
             margin: 0;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
         header, footer {
-            background: white;
-            padding: 15px 0;
-            box-shadow: 0 2px 6px rgb(0 0 0 / 0.1);
+            background: var(--card-bg);
+            padding: 18px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
         }
+        
+        
         main {
             flex-grow: 1;
             display: flex;
@@ -44,48 +55,130 @@ $userEmail = $_SESSION['email'] ?? '';
             padding: 40px 20px;
         }
         .dashboard {
-            background: white;
-            max-width: 500px;
+            background: var(--card-bg);
+            max-width: 400px;
             width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgb(0 0 0 / 0.1);
-            padding: 30px;
-            text-align: center;
+            border-radius: var(--card-radius);
+            box-shadow: var(--shadow);
+            padding: 56px 32px 36px 32px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 159px;
+        }
+        .profile-icon {
+            width: 84px;
+            height: 84px;
+            background: linear-gradient(135deg, var(--primary) 60%, var(--primary-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: -60px auto 18px auto;
+            box-shadow: 0 4px 16px rgba(99,102,241,0.13);
+            border: 4px solid #fff;
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translate(-50%, -50%);
+        }
+        .profile-icon svg {
+            width: 44px;
+            height: 44px;
+            fill: #fff;
         }
         .dashboard h1 {
-            margin-bottom: 10px;
-            color: #222;
+            margin-top: 38px;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: 0.01em;
+            text-align: center;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        .dashboard p {
-            margin: 10px 0 25px;
+        .dashboard .welcome-msg {
+            margin: 0 0 18px 0;
+            font-size: 1.08rem;
+            color: var(--text-secondary);
+            text-align: center;
+            font-weight: 500;
+        }
+        .dashboard .user-info {
+            margin: 0 0 18px 0;
+            font-size: 1.13rem;
+            color: var(--primary);
+            text-align: center;
+            font-weight: 600;
+            word-break: break-all;
+        }
+        .dashboard .desc {
+            margin: 0 0 24px 0;
             font-size: 1rem;
-            color: #555;
+            color: var(--text-secondary);
+            text-align: center;
+            font-weight: 400;
         }
         .btn-logout {
-            display: inline-block;
-            background-color: #000;
-            color: white;
-            font-weight: 600;
-            padding: 14px 40px;
-            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            color: #fff;
+            font-weight: 700;
+            padding: 16px 0;
+            border-radius: 14px;
             text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            font-size: 1rem;
+            transition: 
+                background 0.2s,
+                transform 0.18s,
+                box-shadow 0.18s;
+            font-size: 1.13rem;
             user-select: none;
+            width: 100%;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.13);
+            border: none;
+            outline: none;
+            letter-spacing: 0.03em;
+            margin-top: 18px;
+            cursor: pointer;
+            position: relative;
+            min-height: 48px; /* ensures good vertical centering */
         }
-        .btn-logout:hover {
-            background-color: #444;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        .btn-logout:hover, .btn-logout:focus {
+            background: #000;
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
         }
-        /* Responsive */
+        .btn-logout:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
+        }
         @media (max-width: 600px) {
             .dashboard {
-                padding: 20px;
+                padding: 22px 8px 18px 8px;
+                border-radius: 14px;
+            }
+            .profile-icon {
+                width: 64px;
+                height: 64px;
+                margin-top: -40px;
+            }
+            .profile-icon svg {
+                width: 32px;
+                height: 32px;
+            }
+            .dashboard h1 {
+                font-size: 1.15rem;
+                margin-top: 28px;
             }
             .btn-logout {
-                width: 100%;
-                padding: 14px 0;
+                font-size: 1rem;
+                padding: 12px 0;
             }
         }
     </style>
@@ -97,12 +190,15 @@ $userEmail = $_SESSION['email'] ?? '';
 </header>
 
 <main>
-    <section class="dashboard" aria-label="Espace utilisateur connecté">
-        <h1>Bienvenue, <?php echo htmlspecialchars($userName); ?> ! 👋</h1>
-        <p>Vous êtes connecté avec l'adresse : <strong><?php echo htmlspecialchars($userEmail); ?></strong></p>
-        <p>Nous sommes ravis de vous revoir.</p>
-
-        <a href="logout.php" class="btn-logout" role="button" aria-label="Se déconnecter">Déconnexion</a>
+    <section class="dashboard" aria-label="Logged-in user area">
+        <div class="profile-icon">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 16-4 16 0" /></svg>
+        </div>
+        <h1>Welcome, <?php echo htmlspecialchars($userName); ?> ! 👋</h1>
+        <div class="welcome-msg">You are logged in with:</div>
+        <div class="user-info"><?php echo htmlspecialchars($userEmail); ?></div>
+        <div class="desc">We're glad to see you back.</div>
+        <a href="logout.php" class="btn-logout" role="button" aria-label="Log out">Log out</a>
     </section>
 </main>
 

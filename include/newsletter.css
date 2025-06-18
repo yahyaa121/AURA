@@ -1,0 +1,99 @@
+html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    .bg-image {
+      min-height: 80vh;
+      min-width: 100vw;
+      width: 100vw;
+      height: 80vh;
+      background: url('newsletter/newsletter.jpg') center center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding-bottom: 30px; /* space for footer */
+      margin-left: -20px; /* left margin for alignment */
+    }
+    .bg-image::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.35); /* dark overlay for contrast */
+      z-index: 1;
+    }
+    .newsletter {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      margin: 0;
+      padding: 30px;
+      max-width: 400px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.95);
+      color: #222;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+      backdrop-filter: blur(2px);
+    }
+    .newsletter h3 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #000;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .newsletter p {
+      margin: 0 0 20px;
+      font-size: 1.1rem;
+      color: #333;
+      line-height: 1.6;
+    }
+    .newsletter form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      background: #fff;
+      padding: 20px 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+    .newsletter input[type="email"] {
+      padding: 10px;
+      width: 80%;
+      border: none;
+      border-bottom: 2px solid #000;
+      font-size: 1rem;
+      text-align: center;
+      outline: none;
+      background: transparent;
+    }
+    .newsletter button {
+      padding: 10px 20px;
+      background-color: #000;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+      width: auto;
+    }
+    .newsletter button:hover {
+      background-color: #333;
+    }
+    @media (max-width: 600px) {
+      .newsletter {
+        max-width: 95vw;
+        padding: 15px;
+      }
+      .newsletter form {
+        max-width: 100%;
+        padding: 10px 5px;
+      }
+    }

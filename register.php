@@ -1,95 +1,16 @@
+<?php
+include "include/init.php";
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Create Account</title>
+    <title><?= $lang["register_title"] ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            margin: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .login-container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 8px;
-            
-            width: 100%;
-            max-width: 1400px;
-            margin: 60px auto;
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .login-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .login-subtitle {
-            color: #666;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group input {
-            width: 100%;
-            max-width: 400px;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        .login-button {
-            background-color: black;
-            color: white;
-            border: none;
-            padding: 12px;
-            width: 100%;
-            max-width: 400px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-bottom: 25px;
-        }
-
-        .create-account {
-            font-weight: bold;
-            font-size: 14px;
-            margin-top: 20px;
-        }
-
-        .newsletter-container {
-            background-color:rgb(192, 191, 191);
-            width: 100%;
-            padding: 20px 0;
-            margin-top: auto;
-        }
-
-        header, footer {
-            background-color: white;
-            text-align: center;
-            width: 100%;
-        }
-
-        
-    </style>
+    
+    <link rel="stylesheet" href="register.css">
 </head>
 <body>
     <header>
@@ -97,30 +18,31 @@
     </header>
 
     <div class="login-container">
-        <div class="login-title">CREATE AN ACCOUNT</div>
-        <div class="login-subtitle">Fill in the form below to register:</div>
+        <div class="login-title"><?= $lang["register_title"] ?></div>
+        <div class="login-subtitle"><?= $lang["register_subtitle"] ?></div>
 
         <form method="post" action="process-register.php">
             <div class="form-group">
-                <input type="text" name="name" placeholder="Full name" required>
+                <input type="text" name="name" placeholder="<?= $lang["register_name_placeholder"] ?>" required>
             </div>
             <div class="form-group">
-                <input type="email" name="email" placeholder="Email address" required>
+                <input type="email" name="email" placeholder="<?= $lang["register_email_placeholder"] ?>" required>
             </div>
             <div class="form-group">
-                <input type="adresse" name="adresse" placeholder="Home address" required>
+                <input type="text" name="adresse" placeholder="<?= $lang["register_address_placeholder"] ?>" required>
             </div>
             <div class="form-group">
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="<?= $lang["register_password_placeholder"] ?>" required>
             </div>
             <div class="form-group">
-                <input type="password" name="confirm_password" placeholder="Confirm password" required>
+                <input type="password" name="confirm_password" placeholder="<?= $lang["register_confirm_password_placeholder"] ?>" required>
             </div>
-            <button type="submit" class="login-button">Register</button>
+            <button type="submit" class="login-button"><?= $lang["register_button"] ?></button>
         </form>
 
         <div class="create-account">
-            Already have an account?<a href="connexion.php"> Log in</a>
+            <?= $lang["register_already_account"] ?>
+            <a href="connexion.php"> <?= $lang["register_log_in"] ?></a>
         </div>
     </div>
 

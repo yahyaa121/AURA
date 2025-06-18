@@ -1,0 +1,32 @@
+DELIMITER //
+
+CREATE TRIGGER after_order_detail_insert
+AFTER INSERT ON details
+FOR EACH ROW
+BEGIN
+    UPDATE perfumes
+    SET stockQuantity = stockQuantity - NEW.quantity
+    WHERE idPerfume = NEW.idPerfume;
+END//
+
+CREATE TRIGGER after_order_detail_update
+AFTER UPDATE ON details
+FOR EACH ROW
+BEGIN
+    -- If quantity changed, adjust stock accordingly
+    UPDATE perfumes
+    SET stockQuantity = stockQuantity + OLD.quantity - NEW.quantity
+    WHERE idPerfume = NEW.idPerfume;
+END//
+
+CREATE TRIGGER after_order_detail_delete
+AFTER DELETE ON details
+FOR EACH ROW
+BEGIN
+    -- Restore stock when an order line is removed
+    UPDATE perfumes
+    SET stockQuantity = stockQuantity + OLD.quantity
+    WHERE idPerfume = OLD.idPerfume;
+END//
+
+DELIMITER ;

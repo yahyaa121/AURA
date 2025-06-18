@@ -15,7 +15,7 @@ if (isset($_POST["reset"])) {
 
     $token = bin2hex(random_bytes(16));
     $token_hash = hash("sha256", $token);
-    $expiry = date("Y-m-d H:i:s", time() + 60 * 30); // 30 mins
+    $expiry = date("Y-m-d H:i:s", time() + 60 * 120); // 50 mins
 
     $mysqli = require __DIR__ . "/database.php";
 
@@ -42,7 +42,7 @@ if (isset($_POST["reset"])) {
         $mail->Subject = "Password Reset";
         $mail->isHTML(true);
         $mail->Body = <<<END
-            <p>Click <a href="http://example.com/reset-password.php?token=$token">here</a> to reset your password. This link will expire in 30 minutes.</p>
+            <p>Click <a href="http://localhost/3/reset-password.php?token=$token">here</a> to reset your password. This link will expire in 30 minutes.</p>
         END;
 
         try {

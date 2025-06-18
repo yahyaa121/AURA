@@ -1,0 +1,14 @@
+1. Automated Low Stock Alerts
+Problem: Manually checking which perfumes need restocking is time-consuming.
+Solution: Add a stored procedure that runs daily and emails you when stock is low.
+
+sql
+DELIMITER //
+CREATE PROCEDURE check_low_stock(IN threshold INT)
+BEGIN
+    SELECT p.idPerfume, p.perfumeName, p.stockQuantity 
+    FROM perfumes p
+    WHERE p.stockQuantity < threshold;
+END //
+DELIMITER ;
+Usage: Call CALL check_low_stock(10); to see all perfumes with less than 10 units in stock.

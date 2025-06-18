@@ -30,7 +30,6 @@ $now = date("Y-m-d H:i:s");
 $sql = "INSERT INTO users (username, email, adresse , password, subscriptionDate)
         VALUES (?, ?, ?, ?, ?)";
 $stmt = $mysqli->stmt_init();
-
 if (!$stmt->prepare($sql)) {
     die("SQL error: " . $mysqli->error);
 }

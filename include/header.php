@@ -1,3 +1,14 @@
+<?php
+include 'include/init.php';
+$cart = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
+// Only count valid numeric keys > 0
+$validCart = array_filter(
+    $_SESSION['cart'] ?? [],
+    function($v, $k) { return is_numeric($k) && $k > 0; },
+    ARRAY_FILTER_USE_BOTH
+);
+$count = array_sum($validCart);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5,322 +16,203 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AURA</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Arial', sans-serif;
-    }
-
-    .navbar {
-      background-color: white;
-      padding: 20px 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      transition: transform 0.6s ease, opacity 0.6s ease;
-      box-shadow: 0 8px 10px -5px rgba(0, 0, 0, 0.3);
-      position: relative;
-      transform: translateY(0);
-      opacity: 1;
-      z-index: 9999;
-    }
-
-    .navbar.hidden {
-      transform: translateY(-100%);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .logo {
-      margin-bottom: 20px;
-    }
-    .logo a {
-      text-decoration: none;
-      display: inline-block;
-    }
-    .logo-img {
-      height: 70px;
-      object-fit: contain;
-    }
-
-    .main-nav {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-left,
-    .nav-center,
-    .nav-right {
-      display: flex;
-      align-items: center;
-    }
-
-    .nav-left {
-      justify-content: flex-start;
-      flex: 1;
-      gap: 25px;
-    }
-    .nav-center {
-      justify-content: center;
-      flex: 2;
-      gap: 25px;
-    }
-    .nav-right {
-      justify-content: flex-end;
-      flex: 1;
-      gap: 25px;
-    }
-
-    .main-nav a {
-      text-decoration: none;
-      color: #333;
-      font-size: 16px;
-      font-weight: 500;
-      transition: color 0.3s;
-      display: flex;
-      align-items: center;
-    }
-
-    .main-nav a:hover {
-      color: #888;
-    }
-
-    .main-nav i {
-      font-size: 18px;
-    }
-
-    .navbar.sticky {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      left: 0;
-      z-index: 100;
-      background-color: teal;
-      color: white;
-      padding: 18px 30px;
-      transform: translateY(0);
-    }
-
-    .navbar.sticky .main-nav a {
-      color: white;
-    }
-
-    .navbar.sticky .logo-img {
-      filter: brightness(0) invert(1);
-    }
-
-    .lang-form {
-      display: inline-block;
-      margin: 0;
-      padding: 0;
-    }
-
-    .lang-select-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-
-    .lang-select {
-      background: transparent;
-      border: none;
-      outline: none;
-      appearance: none;
-      color: inherit;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      padding-right: 20px;
-    }
-
-    .lang-select option {
-      background: white;
-      color: #333;
-    }
-
-    .navbar.sticky .lang-select {
-      color: white;
-    }
-
-    .lang-select-wrapper::after {
-      content: '▼';
-      position: absolute;
-      right: 5px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 12px;
-      pointer-events: none;
-      color: #333;
-    }
-
-    .navbar.sticky .lang-select-wrapper::after {
-      color: white;
-    }
-
-    /* COLLECTION DROPDOWN AMÉLIORÉ */
-    .collection-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-
-    .collection-button {
-      background: none;
-      border: none;
-      color: #333;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      padding-right: 20px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: color 0.3s ease;
-    }
-
-    .collection-wrapper::after {
-      content: '▼';
-      font-size: 12px;
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      transition: transform 0.3s ease;
-      color: #333;
-      pointer-events: none;
-    }
-
-    .collection-wrapper:hover::after {
-      transform: translateY(-50%) rotate(180deg);
-    }
-
-    .collection-select {
-      position: absolute;
-      top: 110%;
-      left: 0;
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-      border: 1px solid #ddd;
-      padding: 10px 0;
-      display: block;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-      z-index: 999;
-      min-width: 180px;
-    }
-
-    .collection-wrapper:hover .collection-select {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .collection-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .collection-list li button {
-      background: none;
-      border: none;
-      width: 100%;
-      text-align: left;
-      font-size: 15px;
-      cursor: pointer;
-      color: #333;
-      padding: 10px 15px;
-      transition: background-color 0.3s ease;
-    }
-
-    .collection-list li button:hover {
-      background-color: #f7f7f7;
-    }
-
-    .navbar.sticky .collection-button {
-      color: white;
-    }
-
-    .navbar.sticky .collection-wrapper::after {
-      color: white;
-    }
-
-    .navbar.sticky .collection-select {
-      background-color: white;
-    }
-
-    .navbar.sticky .collection-list li button {
-      color: #333;
-    }
-  </style>
+  <link rel="stylesheet" href="include/header.css" />
 </head>
 <body>
+
   <header class="navbar">
+    <button class="nav-toggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="main-nav">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
     <div class="logo">
       <a href="accueil.php">
-        <img src="Logo/blackAura.png" alt="AURA Logo" class="logo-img" />
+        <img src="aura.png" alt="AURA Logo" class="logo-img" />
       </a>
     </div>
-    <nav class="main-nav">
+
+    <nav class="main-nav" id="main-nav">
       <div class="nav-left">
         <form method="post" action="change_language.php" class="lang-form">
           <div class="lang-select-wrapper">
             <select name="lang" class="lang-select" onchange="this.form.submit()">
-              <option value="fr" selected>FR</option>
-              <option value="en">EN</option>
+             <option value="fr" <?= ($_SESSION['lang'] ?? 'fr') == 'fr' ? 'selected' : '' ?>>FR</option>
+             <option value="en" <?= ($_SESSION['lang'] ?? 'fr') == 'en' ? 'selected' : '' ?>>EN</option>
             </select>
           </div>
         </form>
-        <a href="#"><i class="fas fa-search"></i></a>
+
+        <form id="searchForm" role="search" autocomplete="off">
+          <button type="button" id="searchIcon" aria-label="Afficher la recherche">
+            <i class="fas fa-search"></i>
+          </button>
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Rechercher un parfum..." 
+            aria-label="Rechercher un parfum"
+            autocomplete="off"
+          />
+          <div id="suggestions" role="listbox" aria-label="Suggestions"></div>
+        </form>
       </div>
       <div class="nav-center">
-        <a href="perfume.php">Perfumes</a>
+        <a href="perfume.php"><?= $lang['perfumes'] ?></a>
         <div class="collection-wrapper">
-          <button type="button" class="collection-button">Collections</button>
-          <div class="collection-select">
-            <form method="post" action="collections.php">
-              <ul class="collection-list">
-                <li><button type="submit" name="designer" value="Louis Vuitton">Louis Vuitton</button></li>
-                <li><button type="submit" name="designer" value="Jean Paul Gaultier">Jean Paul Gaultier</button></li>
-                <li><button type="submit" name="designer" value="Byredo">Byredo</button></li>
-              </ul>
-            </form>
-          </div>
+            <button type="button" class="collection-button"><?= $lang['collections'] ?></button>
+            <div class="collection-select">
+                <form method="post" action="collections.php">
+                    <ul class="collection-list">
+                        <li><button type="submit" name="designer" value="louis_vuitton">Louis Vuitton</button></li>
+                        <li><button type="submit" name="designer" value="jean_paul_gaultier">Jean Paul Gaultier</button></li>
+                        <li><button type="submit" name="designer" value="byredo">Byredo</button></li>
+                    </ul>
+                </form>
+            </div>
         </div>
-        <a href="#">Offres & Discount</a>
-        <a href="newarrivals.php">New arrivals</a>
+        <a href="offres.php"><?= $lang['offers'] ?></a>
+        <a href="newarrivals.php"><?= $lang['new_arrivals'] ?></a>
       </div>
       <div class="nav-right">
         <a href="connexion.php"><i class="fas fa-user"></i></a>
-        <a href="#"><i class="fas fa-heart"></i></a>
-        <a href="#"><i class="fas fa-shopping-cart"></i></a>
+        <a href="wishlist.php"><i class="fas fa-heart"></i></a>
+        <a href="cart.php" class="cart-link" aria-label="Voir le panier">
+          <i class="fa fa-shopping-cart"></i>
+          <?php if ($count > 0): ?>
+            <span class="cart-badge"><?= $count ?></span>
+          <?php endif; ?>
+        </a>
       </div>
     </nav>
   </header>
 
   <script>
+    // Hamburger menu toggle for mobile
+    const navToggle = document.querySelector('.nav-toggle');
+    const mainNav = document.querySelector('.main-nav');
+
+    navToggle.addEventListener('click', function() {
+      mainNav.classList.toggle('open');
+      const expanded = navToggle.getAttribute('aria-expanded') === 'true';
+      navToggle.setAttribute('aria-expanded', !expanded);
+    });
+
+    // Sticky navbar on scroll
     let lastScroll = 0;
     const navbar = document.querySelector('.navbar');
+
     window.addEventListener('scroll', () => {
       const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
       if (currentScroll < lastScroll && currentScroll > 10) {
         navbar.classList.add('sticky');
         navbar.classList.remove('hidden');
-      } else if (currentScroll > lastScroll) {
+      } 
+      else if (currentScroll > lastScroll) {
         navbar.classList.remove('sticky');
         navbar.classList.add('hidden');
-      } else if (currentScroll <= 10) {
+      }
+      else if (currentScroll <= 10) {
         navbar.classList.remove('sticky', 'hidden');
       }
+
       lastScroll = currentScroll <= 0 ? 0 : currentScroll;
     });
-  </script>
+
+    const items = [
+  { name: 'Nouveau Monde', img: 'perfumes/1.png' },
+  { name: "Heures d'Absence", img: 'perfumes/2.png' },
+  { name: 'Imagination', img: 'perfumes/3.png' },
+  { name: 'Fleur du Desert', img: 'perfumes/4.png' },
+  { name: 'Ombre Nomade', img: 'perfumes/5.png' },
+  { name: 'Apogée', img: 'perfumes/6.png' },
+  { name: "Bal d'Afrique", img: 'perfumes/7.jpg' },
+  { name: 'Black Saffron', img: 'perfumes/8.jpg' },
+  { name: 'Mojave Ghost', img: 'perfumes/8.jpg' },
+  { name: 'Super Cedar', img: 'perfumes/10.jpg' },
+  { name: 'Rouge Chaotique', img: 'perfumes/11.jpg' },
+  { name: 'Sellier', img: 'perfumes/12.jpg' },
+  { name: 'Le Male Le Parfum', img: 'perfumes/13.png' },
+  { name: 'Ultra Male', img: 'perfumes/14.png' },
+  { name: 'Scandal Pour Homme', img: 'perfumes/15.png' },
+  { name: 'Divine', img: 'perfumes/16.png' },
+  { name: 'Scandal le parfum', img: 'perfumes/17.png' },
+  { name: 'Le Male Elixir', img: 'perfumes/18.png' },
+];
+
+  const searchIcon = document.getElementById('searchIcon');
+  const searchInput = document.getElementById('searchInput');
+  const suggestions = document.getElementById('suggestions');
+
+  searchIcon.addEventListener('click', (e) => {
+    e.preventDefault(); // prevent default link action
+    searchInput.style.display = 'block';
+    searchInput.focus();
+    searchIcon.style.display = 'none';
+  });
+
+  searchInput.addEventListener('input', () => {
+  const query = searchInput.value.toLowerCase().trim();
+
+  if (query.length < 1) {
+    suggestions.style.display = 'none';
+    suggestions.innerHTML = '';
+    return;
+  }
+
+  const filtered = items.filter(item => item.name.toLowerCase().includes(query));
+
+  if(filtered.length === 0) {
+    suggestions.style.display = 'none';
+    suggestions.innerHTML = '';
+    return;
+  }
+
+  suggestions.innerHTML = '';
+  filtered.forEach(item => {
+    const div = document.createElement('div');
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.padding = '5px';
+    div.style.cursor = 'pointer';
+
+    // Create image element
+    const img = document.createElement('img');
+    img.src = item.img;
+    img.alt = item.name;
+    img.style.width = '32px';
+    img.style.height = '32px';
+    img.style.objectFit = 'cover';
+    img.style.marginRight = '10px';
+    img.style.borderRadius = '6px';
+
+    // Add image and text
+    div.appendChild(img);
+    div.appendChild(document.createTextNode(item.name));
+
+    div.addEventListener('click', () => {
+      const urlName = encodeURIComponent(item.name);
+      window.location.href = `product.php?name=${urlName}`;
+    });
+
+    suggestions.appendChild(div);
+  });
+
+  suggestions.style.display = 'block';
+});
+
+  document.addEventListener('click', e => {
+    if (!searchInput.contains(e.target) && !suggestions.contains(e.target) && !searchIcon.contains(e.target)) {
+      suggestions.style.display = 'none';
+      if(searchInput.value.trim() === '') {
+        searchInput.style.display = 'none';
+        searchIcon.style.display = 'inline-block';
+      }
+    }
+  });
+  
+</script>
+
 </body>
 </html>
